@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -14,22 +15,7 @@
             margin: 0;
             padding: 0;
         }
-.save-button {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 10px;
-    border: 2px solid #2563eb;
-    border-radius: 8px;
-    background: white;
-    color: #2563eb;
-    font-size: 15px;
-    font-weight: bold;
-    cursor: pointer;
-}
 
-.save-button:hover {
-    background: #eff6ff;
-}
         body {
             font-family: Arial, Helvetica, sans-serif;
             background: #f5f7fb;
@@ -54,6 +40,7 @@
             font-size: 27px;
             font-weight: bold;
             color: #2563eb;
+            text-decoration: none;
         }
 
         nav {
@@ -206,6 +193,27 @@
             margin-bottom: 15px;
         }
 
+        /* SAVE BUTTON */
+
+        .save-button {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 2px solid #2563eb;
+            border-radius: 8px;
+            background: white;
+            color: #2563eb;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .save-button:hover {
+            background: #eff6ff;
+        }
+
+        /* DETAILS BUTTON */
+
         .details-button {
             width: 100%;
             padding: 12px;
@@ -352,7 +360,7 @@
         }
 
     </style>
-    
+
 </head>
 
 
@@ -363,13 +371,15 @@
 
 <header>
 
-    <div class="logo">
+    <a href="index.html" class="logo">
         StudentStay
-    </div>
+    </a>
 
     <nav>
 
-        <a href="#home">Home</a>
+        <a href="#home">
+            Home
+        </a>
 
         <a href="#accommodation">
             Accommodation
@@ -429,7 +439,6 @@
 </section>
 
 
-
 <!-- ACCOMMODATION -->
 
 <section class="section" id="accommodation">
@@ -480,6 +489,19 @@
                     R3500 / month
                 </p>
 
+
+                <button
+                    class="save-button"
+                    onclick="toggleFavourite(
+                        'Student Residence',
+                        'Soshanguve',
+                        '3500'
+                    )"
+                >
+                    ❤️ Save
+                </button>
+
+
                 <button
                     class="details-button"
                     onclick="showDetails(
@@ -488,12 +510,6 @@
                         '3500',
                         'Wi-Fi, Security, Furnished'
                     )"
-                   <button
-    class="save-button"
-    onclick="toggleFavourite('Student Residence', 'Soshanguve', '3500')"
->
-    ❤️ Save
-</button> 
                 >
                     View Details
                 </button>
@@ -501,7 +517,6 @@
             </div>
 
         </div>
-
 
 
         <!-- CARD 2 -->
@@ -534,6 +549,19 @@
                     R4000 / month
                 </p>
 
+
+                <button
+                    class="save-button"
+                    onclick="toggleFavourite(
+                        'Modern Student Room',
+                        'Pretoria',
+                        '4000'
+                    )"
+                >
+                    ❤️ Save
+                </button>
+
+
                 <button
                     class="details-button"
                     onclick="showDetails(
@@ -542,12 +570,6 @@
                         '4000',
                         'Wi-Fi, Parking, Furnished'
                     )"
-                    <button
-    class="save-button"
-    onclick="toggleFavourite('Modern Student Room', 'Pretoria', '4000')"
->
-    ❤️ Save
-</button>
                 >
                     View Details
                 </button>
@@ -555,7 +577,6 @@
             </div>
 
         </div>
-
 
 
         <!-- CARD 3 -->
@@ -588,6 +609,19 @@
                     R3000 / month
                 </p>
 
+
+                <button
+                    class="save-button"
+                    onclick="toggleFavourite(
+                        'Affordable Apartment',
+                        'Soshanguve',
+                        '3000'
+                    )"
+                >
+                    ❤️ Save
+                </button>
+
+
                 <button
                     class="details-button"
                     onclick="showDetails(
@@ -596,12 +630,6 @@
                         '3000',
                         'Wi-Fi, Security, Kitchen'
                     )"
-                    <button
-    class="save-button"
-    onclick="toggleFavourite('Affordable Apartment', 'Soshanguve', '3000')"
->
-    ❤️ Save
-</button>
                 >
                     View Details
                 </button>
@@ -616,7 +644,6 @@
 </section>
 
 
-
 <!-- DETAILS -->
 
 <div id="details">
@@ -629,26 +656,31 @@
 
     <p id="detailsFeatures"></p>
 
-<button
-    class="details-button"
-    onclick="bookAccommodation()"
->
-    Book Now
-</button>
 
-<button
-    class="close-button"
-    onclick="closeDetails()"
->
-    Close
-</button>
+    <button
+        class="details-button"
+        onclick="bookAccommodation()"
+    >
+        Book Now
+    </button>
+
+
+    <button
+        class="close-button"
+        onclick="closeDetails()"
+    >
+        Close
+    </button>
+
 </div>
-
 
 
 <!-- WHY STUDENTSTAY -->
 
-<section class="features-section" id="features">
+<section
+    class="features-section"
+    id="features"
+>
 
     <div class="section-title">
 
@@ -722,7 +754,6 @@
 </section>
 
 
-
 <!-- FOOTER -->
 
 <footer id="contact">
@@ -740,115 +771,224 @@
     </p>
 
 </footer>
+
+
 <script>
+
+
+/* BOOK ACCOMMODATION */
 
 function bookAccommodation() {
 
-    let name = document.getElementById("detailsName").textContent;
-    let location = document.getElementById("detailsLocation").textContent;
-    let price = document.getElementById("detailsPrice").textContent;
+    let name =
+        document.getElementById("detailsName").textContent;
 
-    localStorage.setItem("bookingName", name);
-    localStorage.setItem("bookingLocation", location);
-    localStorage.setItem("bookingPrice", price);
+    let location =
+        document.getElementById("detailsLocation").textContent;
 
-    window.location.href = "booking.html";
+    let price =
+        document.getElementById("detailsPrice").textContent;
+
+
+    localStorage.setItem(
+        "bookingName",
+        name
+    );
+
+    localStorage.setItem(
+        "bookingLocation",
+        location
+    );
+
+    localStorage.setItem(
+        "bookingPrice",
+        price
+    );
+
+
+    window.location.href =
+        "booking.html";
+
 }
 
+
+/* SEARCH AND PRICE FILTER */
 
 function searchAccommodation() {
 
-    let search = document.getElementById("searchInput").value.toLowerCase().trim();
-    let maxPrice = document.getElementById("priceInput").value;
+    let search =
+        document.getElementById("searchInput")
+        .value
+        .toLowerCase()
+        .trim();
 
-    let cards = document.querySelectorAll(".card");
+
+    let maxPrice =
+        document.getElementById("priceInput")
+        .value;
+
+
+    let cards =
+        document.querySelectorAll(".card");
+
 
     cards.forEach(function(card) {
 
-        let information = card.textContent.toLowerCase();
+        let information =
+            card.textContent.toLowerCase();
 
-        let priceText = card.querySelector(".price").textContent;
 
-        let price = parseInt(priceText.replace(/\D/g, ""));
+        let priceText =
+            card.querySelector(".price")
+            .textContent;
+
+
+        let price =
+            parseInt(
+                priceText.replace(/\D/g, "")
+            );
+
 
         let locationMatch =
-            search === "" || information.includes(search);
+            search === "" ||
+            information.includes(search);
+
 
         let priceMatch =
-            maxPrice === "" || price <= Number(maxPrice);
+            maxPrice === "" ||
+            price <= Number(maxPrice);
 
-        if (locationMatch && priceMatch) {
+
+        if (
+            locationMatch &&
+            priceMatch
+        ) {
+
             card.style.display = "";
+
         } else {
+
             card.style.display = "none";
+
         }
 
     });
+
 }
 
 
-function showDetails(name, location, price, features) {
+/* VIEW DETAILS */
 
-    document.getElementById("detailsName").textContent = name;
+function showDetails(
+    name,
+    location,
+    price,
+    features
+) {
 
-    document.getElementById("detailsLocation").textContent =
+    document
+        .getElementById("detailsName")
+        .textContent = name;
+
+
+    document
+        .getElementById("detailsLocation")
+        .textContent =
         "📍 Location: " + location;
 
-    document.getElementById("detailsPrice").textContent =
+
+    document
+        .getElementById("detailsPrice")
+        .textContent =
         "💰 Price: R" + price + " per month";
 
-    document.getElementById("detailsFeatures").textContent =
+
+    document
+        .getElementById("detailsFeatures")
+        .textContent =
         "Facilities: " + features;
 
-    document.getElementById("details").style.display = "block";
 
-    document.getElementById("details").scrollIntoView({
-        behavior: "smooth"
-    });
+    document
+        .getElementById("details")
+        .style.display = "block";
+
+
+    document
+        .getElementById("details")
+        .scrollIntoView({
+            behavior: "smooth"
+        });
+
 }
 
+
+/* CLOSE DETAILS */
 
 function closeDetails() {
 
-    document.getElementById("details").style.display = "none";
+    document
+        .getElementById("details")
+        .style.display = "none";
 
 }
+
+
 /* SAVE / UNSAVE FAVOURITE */
 
-function toggleFavourite(name, location, price) {
+function toggleFavourite(
+    name,
+    location,
+    price
+) {
 
     let favourites =
         JSON.parse(
-            localStorage.getItem("studentFavourites")
+            localStorage.getItem(
+                "studentFavourites"
+            )
         ) || [];
 
 
     let existingIndex =
-        favourites.findIndex(function(item) {
+        favourites.findIndex(
+            function(item) {
 
-            return item.name === name &&
-                   item.location === location;
+                return (
+                    item.name === name &&
+                    item.location === location
+                );
 
-        });
+            }
+        );
 
 
     if (existingIndex !== -1) {
 
-        favourites.splice(existingIndex, 1);
+        favourites.splice(
+            existingIndex,
+            1
+        );
 
-        alert("Removed from favourites.");
+        alert(
+            "Removed from favourites."
+        );
 
     } else {
 
         favourites.push({
 
             name: name,
+
             location: location,
+
             price: "R" + price + " / month"
 
         });
 
-        alert("Added to favourites ❤️");
+        alert(
+            "Added to favourites ❤️"
+        );
 
     }
 
@@ -859,7 +999,10 @@ function toggleFavourite(name, location, price) {
     );
 
 }
+
 </script>
 
+
 </body>
+
 </html>
