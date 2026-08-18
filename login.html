@@ -5,9 +5,32 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>StudentStay | Login</title>
+
+
+    <!-- SUPABASE -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+
+        const SUPABASE_URL =
+            "https://xciewmepytfgdhyjkkne.supabase.co";
+
+        const SUPABASE_KEY =
+            "YOUR_PUBLISHABLE_KEY";
+
+        const supabaseClient =
+            window.supabase.createClient(
+                SUPABASE_URL,
+                SUPABASE_KEY
+            );
+
+    </script>
+
 
     <style>
 
@@ -138,7 +161,9 @@
 
     <div class="login-box">
 
-        <h1>Welcome Back</h1>
+        <h1>
+            Welcome Back
+        </h1>
 
         <p class="subtitle">
             Login to your StudentStay account
@@ -174,6 +199,7 @@
             <button
                 type="submit"
                 class="login-button"
+                id="loginButton"
             >
                 Login
             </button>
@@ -204,29 +230,116 @@
 
 <script>
 
-function loginUser(event) {
+async function loginUser(event) {
 
     event.preventDefault();
 
 
     let email =
-        document.getElementById("email").value;
+        document.getElementById("email")
+        .value
+        .trim();
 
     let password =
-        document.getElementById("password").value;
+        document.getElementById("password")
+        .value;
 
 
-    let savedEmail =
-        localStorage.getItem("studentEmail");
+    let message =
+        document.getElementById("message");
 
-    let savedPassword =
-        localStorage.getItem("studentPassword");
+    let button =
+        document.getElementById("loginButton");
 
 
-    if (
-        email === savedEmail &&
-        password === savedPassword
-    ) {
+    message.textContent =
+        "Logging in...";
+
+    message.style.color =
+        "#2563eb";
+
+    button.disabled =
+        true;
+
+
+    try {
+
+        /* SUPABASE LOGIN */
+
+        const { data, error } =
+            await supabaseClient.auth.signInWithPassword({
+
+                email: email,
+
+                password: password
+
+            });
+
+
+        if (error) {
+
+            throw error;
+
+        }
+
+
+        /* GET USER */
+
+        const user =
+            data.user;
+
+
+        if (!user) {
+
+            throw new Error(
+                "Login failed."
+            );
+
+        }
+
+
+        /* GET PROFILE */
+
+        const { data: profile, error: profileError } =
+            await supabaseClient
+                .from("profiles")
+                .select("full_name, phone")
+                .eq("id", user.id)
+                .single();
+
+
+        if (profileError) {
+
+            console.log(
+                "Profile could not be loaded:",
+                profileError
+            );
+
+        }
+
+
+        /* SAVE BASIC INFORMATION */
+
+        localStorage.setItem(
+            "studentEmail",
+            user.email
+        );
+
+
+        if (profile) {
+
+            localStorage.setItem(
+                "studentName",
+                profile.full_name
+            );
+
+            localStorage.setItem(
+                "studentPhone",
+                profile.phone || ""
+            );
+
+        }
+
 
         localStorage.setItem(
             "loggedIn",
@@ -234,12 +347,14 @@ function loginUser(event) {
         );
 
 
-        document.getElementById("message").textContent =
+        message.textContent =
             "Login successful!";
 
-        document.getElementById("message").style.color =
+        message.style.color =
             "green";
 
+
+        /* GO TO DASHBOARD */
 
         setTimeout(function() {
 
@@ -249,13 +364,18 @@ function loginUser(event) {
         }, 1000);
 
 
-    } else {
+    } catch (error) {
 
-        document.getElementById("message").textContent =
+        console.error(error);
+
+        message.textContent =
             "Incorrect email or password.";
 
-        document.getElementById("message").style.color =
+        message.style.color =
             "red";
+
+        button.disabled =
+            false;
 
     }
 
