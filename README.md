@@ -1,0 +1,2 @@
+# studentStay
+Student accomodation platform
