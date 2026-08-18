@@ -475,7 +475,7 @@ async function confirmBooking(event) {
 
     /* INSERT BOOKING */
 
-   const booking =
+const booking =
 await supabaseClient
     .from("bookings")
     .insert({
@@ -485,8 +485,6 @@ await supabaseClient
         accommodation_id: accommodationId,
 
         nove_in_date: moveInDate,
-
-        message: message || null,
 
         status: "Confirmed"
 
