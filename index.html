@@ -595,13 +595,19 @@
 
     <p id="detailsFeatures"></p>
 
-    <button
-        class="close-button"
-        onclick="closeDetails()"
-    >
-        Close
-    </button>
+<button
+    class="details-button"
+    onclick="bookAccommodation()"
+>
+    Book Now
+</button>
 
+<button
+    class="close-button"
+    onclick="closeDetails()"
+>
+    Close
+</button>
 </div>
 
 
@@ -704,7 +710,37 @@
 
 
 <!-- JAVASCRIPT -->
+function bookAccommodation() {
 
+    let name =
+        document.getElementById("detailsName").textContent;
+
+    let location =
+        document.getElementById("detailsLocation").textContent;
+
+    let price =
+        document.getElementById("detailsPrice").textContent;
+
+
+    localStorage.setItem(
+        "bookingName",
+        name
+    );
+
+    localStorage.setItem(
+        "bookingLocation",
+        location
+    );
+
+    localStorage.setItem(
+        "bookingPrice",
+        price
+    );
+
+
+    window.location.href =
+        "booking.html";
+}
 <script>
 
 
