@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,12 +6,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>StudentStay | Student Accommodation</title>
+    <title>StudentStay | Confirm Booking</title>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
-
         const SUPABASE_URL =
             "https://xciewmepytfgdhyjkkne.supabase.co";
 
@@ -24,7 +22,6 @@
                 SUPABASE_URL,
                 SUPABASE_KEY
             );
-
     </script>
 
     <style>
@@ -36,305 +33,129 @@
         }
 
         body {
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: Arial, sans-serif;
             background: #f5f7fb;
             color: #1f2937;
+            min-height: 100vh;
         }
 
         header {
             background: white;
             padding: 18px 7%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
         }
 
         .logo {
+            color: #2563eb;
             font-size: 27px;
             font-weight: bold;
-            color: #2563eb;
             text-decoration: none;
         }
 
-        nav {
-            display: flex;
-            gap: 22px;
-            align-items: center;
+        .container {
+            width: 90%;
+            max-width: 600px;
+            margin: 50px auto;
         }
 
-        nav a {
-            text-decoration: none;
-            color: #374151;
-            font-weight: 500;
-        }
-
-        nav a:hover {
-            color: #2563eb;
-        }
-
-        .hero {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            color: white;
-            text-align: center;
-            padding: 90px 20px;
-        }
-
-        .hero h1 {
-            font-size: 48px;
-            margin-bottom: 15px;
-        }
-
-        .hero p {
-            font-size: 19px;
-            margin-bottom: 35px;
-        }
-
-        .search-box {
+        .booking-box {
             background: white;
-            max-width: 900px;
-            margin: auto;
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+
+        .accommodation-info {
+            background: #f5f7fb;
             padding: 20px;
-            border-radius: 14px;
-            display: flex;
-            gap: 12px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border-radius: 10px;
+            margin-bottom: 25px;
         }
 
-        .search-box input {
-            flex: 1;
-            padding: 15px;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 15px;
-            outline: none;
-        }
-
-        .search-button {
-            padding: 15px 28px;
-            border: none;
-            border-radius: 8px;
-            background: #111827;
-            color: white;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .section {
-            padding: 70px 7%;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 45px;
-        }
-
-        .section-title h2 {
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
-
-        .section-title p {
-            color: #6b7280;
-        }
-
-        .accommodation {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 25px;
-        }
-
-        .card {
-            background: white;
-            border-radius: 14px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            transition: 0.2s;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card-image {
-            width: 100%;
-            height: 190px;
-            object-fit: cover;
-        }
-
-        .card-content {
-            padding: 22px;
-        }
-
-        .card h3 {
-            font-size: 21px;
+        .accommodation-info h2 {
+            color: #2563eb;
             margin-bottom: 12px;
         }
 
-        .location {
-            color: #6b7280;
-            margin-bottom: 10px;
-        }
-
-        .features {
-            color: #4b5563;
-            line-height: 1.8;
-            margin-bottom: 15px;
-        }
-
-        .price {
-            font-size: 21px;
-            font-weight: bold;
-            color: #2563eb;
-            margin-bottom: 15px;
-        }
-
-        .save-button {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 10px;
-            border: 2px solid #2563eb;
-            border-radius: 8px;
-            background: white;
-            color: #2563eb;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .details-button {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            background: #2563eb;
-            color: white;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        #details {
-            display: none;
-            max-width: 900px;
-            margin: 0 auto 60px;
-            padding: 30px;
-            background: white;
-            border-radius: 14px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        }
-
-        #details h2 {
-            color: #2563eb;
-            margin-bottom: 20px;
-        }
-
-        #details p {
-            margin-bottom: 12px;
-            font-size: 16px;
-        }
-
-        .close-button {
-            padding: 10px 20px;
-            background: #111827;
-            color: white;
-            border: none;
-            border-radius: 7px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        .features-section {
-            background: white;
-            padding: 70px 7%;
-        }
-
-        .feature-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-            text-align: center;
-        }
-
-        .feature {
-            padding: 25px;
-        }
-
-        .feature-icon {
-            font-size: 40px;
-            margin-bottom: 15px;
-        }
-
-        .feature h3 {
-            margin-bottom: 10px;
-        }
-
-        .feature p {
-            color: #6b7280;
-            line-height: 1.6;
-        }
-
-        footer {
-            background: #111827;
-            color: white;
-            padding: 40px 7%;
-            text-align: center;
-        }
-
-        footer h2 {
-            margin-bottom: 10px;
-        }
-
-        footer p {
-            color: #d1d5db;
+        .accommodation-info p {
             margin-bottom: 8px;
         }
 
-        @media (max-width: 900px) {
-
-            .accommodation {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .feature-container {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
         }
 
-        @media (max-width: 650px) {
+        input,
+        textarea {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #d1d5db;
+            border-radius: 7px;
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
 
-            header {
-                flex-direction: column;
-                gap: 15px;
-            }
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
 
-            nav {
-                gap: 12px;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
 
-            .hero h1 {
-                font-size: 34px;
-            }
+        .confirm-button {
+            width: 100%;
+            padding: 14px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
 
-            .search-box {
-                flex-direction: column;
-            }
+        .confirm-button:hover {
+            background: #1d4ed8;
+        }
 
-            .accommodation {
-                grid-template-columns: 1fr;
-            }
+        .back-button {
+            width: 100%;
+            padding: 13px;
+            margin-top: 10px;
+            background: #111827;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
 
-            .feature-container {
-                grid-template-columns: 1fr;
-            }
+        .message {
+            text-align: center;
+            margin-top: 18px;
+            font-weight: bold;
+        }
 
+        .loading {
+            text-align: center;
+            padding: 30px;
         }
 
     </style>
@@ -351,461 +172,139 @@
         StudentStay
     </a>
 
-    <nav>
-
-        <a href="#home">Home</a>
-
-        <a href="#accommodation">
-            Accommodation
-        </a>
-
-        <a href="#features">
-            Why StudentStay
-        </a>
-
-        <a href="favourites.html">
-            ❤️ Favourites
-        </a>
-
-        <a href="#contact">
-            Contact
-        </a>
-
-    </nav>
-
 </header>
 
 
-<section class="hero" id="home">
+<div class="container">
 
-    <h1>
-        Find Your Perfect Student Home
-    </h1>
+    <div class="booking-box">
 
-    <p>
-        Affordable, safe and convenient accommodation for students.
-    </p>
+        <h1>Confirm Booking</h1>
 
-    <div class="search-box">
+        <p class="subtitle">
+            Complete the information below to confirm your accommodation.
+        </p>
 
-        <input
-            type="text"
-            id="searchInput"
-            placeholder="Enter location e.g. Soshanguve"
+
+        <div
+            id="loading"
+            class="loading"
+        >
+            Loading accommodation...
+        </div>
+
+
+        <div
+            id="bookingContent"
+            style="display:none;"
         >
 
-        <input
-            type="number"
-            id="priceInput"
-            placeholder="Maximum price"
-        >
+            <div class="accommodation-info">
+
+                <h2 id="accommodationName"></h2>
+
+                <p id="accommodationLocation"></p>
+
+                <p id="accommodationPrice"></p>
+
+                <p id="accommodationFeatures"></p>
+
+            </div>
+
+
+            <form onsubmit="confirmBooking(event)">
+
+                <label>
+                    Move-in Date
+                </label>
+
+                <input
+                    type="date"
+                    id="moveInDate"
+                    required
+                >
+
+
+                <label>
+                    Message
+                </label>
+
+                <textarea
+                    id="message"
+                    placeholder="Add a message to the accommodation owner (optional)"
+                ></textarea>
+
+
+                <button
+                    type="submit"
+                    class="confirm-button"
+                >
+                    Confirm Booking
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <div
+            id="statusMessage"
+            class="message"
+        ></div>
+
 
         <button
-            class="search-button"
-            onclick="searchAccommodation()"
+            class="back-button"
+            onclick="window.location.href='index.html'"
         >
-            Search
+            Back to Accommodation
         </button>
 
     </div>
 
-</section>
-
-
-<section class="section" id="accommodation">
-
-    <div class="section-title">
-
-        <h2>
-            Available Accommodation
-        </h2>
-
-        <p>
-            Find a place that fits your budget and lifestyle.
-        </p>
-
-    </div>
-
-
-    <div class="accommodation">
-
-
-        <!-- ACCOMMODATION 1 -->
-
-        <div class="card">
-
-            <img
-                class="card-image"
-                src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80"
-                alt="Student residence"
-            >
-
-            <div class="card-content">
-
-                <h3>
-                    Student Residence
-                </h3>
-
-                <p class="location">
-                    📍 Soshanguve
-                </p>
-
-                <p class="features">
-                    📶 Wi-Fi<br>
-                    🛡️ Security<br>
-                    🛏️ Furnished
-                </p>
-
-                <p class="price">
-                    R3500 / month
-                </p>
-
-                <button
-                    class="save-button"
-                    onclick="toggleFavourite(
-                        1,
-                        'Student Residence',
-                        'Soshanguve',
-                        3500
-                    )"
-                >
-                    ❤️ Save
-                </button>
-
-                <button
-                    class="details-button"
-                    onclick="showDetails(
-                        1,
-                        'Student Residence',
-                        'Soshanguve',
-                        3500,
-                        'Wi-Fi, Security, Furnished'
-                    )"
-                >
-                    View Details
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <!-- ACCOMMODATION 2 -->
-
-        <div class="card">
-
-            <img
-                class="card-image"
-                src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=800&q=80"
-                alt="Modern student room"
-            >
-
-            <div class="card-content">
-
-                <h3>
-                    Modern Student Room
-                </h3>
-
-                <p class="location">
-                    📍 Pretoria
-                </p>
-
-                <p class="features">
-                    📶 Wi-Fi<br>
-                    🅿️ Parking<br>
-                    🛏️ Furnished
-                </p>
-
-                <p class="price">
-                    R4000 / month
-                </p>
-
-                <button
-                    class="save-button"
-                    onclick="toggleFavourite(
-                        2,
-                        'Modern Student Room',
-                        'Pretoria',
-                        4000
-                    )"
-                >
-                    ❤️ Save
-                </button>
-
-                <button
-                    class="details-button"
-                    onclick="showDetails(
-                        2,
-                        'Modern Student Room',
-                        'Pretoria',
-                        4000,
-                        'Wi-Fi, Parking, Furnished'
-                    )"
-                >
-                    View Details
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <!-- ACCOMMODATION 3 -->
-
-        <div class="card">
-
-            <img
-                class="card-image"
-                src="https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80"
-                alt="Affordable apartment"
-            >
-
-            <div class="card-content">
-
-                <h3>
-                    Affordable Apartment
-                </h3>
-
-                <p class="location">
-                    📍 Soshanguve
-                </p>
-
-                <p class="features">
-                    📶 Wi-Fi<br>
-                    🛡️ Security<br>
-                    🍳 Kitchen
-                </p>
-
-                <p class="price">
-                    R3000 / month
-                </p>
-
-                <button
-                    class="save-button"
-                    onclick="toggleFavourite(
-                        3,
-                        'Affordable Apartment',
-                        'Soshanguve',
-                        3000
-                    )"
-                >
-                    ❤️ Save
-                </button>
-
-                <button
-                    class="details-button"
-                    onclick="showDetails(
-                        3,
-                        'Affordable Apartment',
-                        'Soshanguve',
-                        3000,
-                        'Wi-Fi, Security, Kitchen'
-                    )"
-                >
-                    View Details
-                </button>
-
-            </div>
-
-        </div>
-
-
-    </div>
-
-</section>
-
-
-<div id="details">
-
-    <h2 id="detailsName"></h2>
-
-    <p id="detailsLocation"></p>
-
-    <p id="detailsPrice"></p>
-
-    <p id="detailsFeatures"></p>
-
-    <button
-        class="details-button"
-        onclick="bookAccommodation()"
-    >
-        Book Now
-    </button>
-
-    <button
-        class="close-button"
-        onclick="closeDetails()"
-    >
-        Close
-    </button>
-
 </div>
-
-
-<section
-    class="features-section"
-    id="features"
->
-
-    <div class="section-title">
-
-        <h2>
-            Why Choose StudentStay?
-        </h2>
-
-        <p>
-            Everything students need to find suitable accommodation.
-        </p>
-
-    </div>
-
-
-    <div class="feature-container">
-
-        <div class="feature">
-
-            <div class="feature-icon">
-                🔎
-            </div>
-
-            <h3>
-                Easy Search
-            </h3>
-
-            <p>
-                Search accommodation by location and budget.
-            </p>
-
-        </div>
-
-
-        <div class="feature">
-
-            <div class="feature-icon">
-                🛡️
-            </div>
-
-            <h3>
-                Safe Accommodation
-            </h3>
-
-            <p>
-                Find accommodation with important facilities and security.
-            </p>
-
-        </div>
-
-
-        <div class="feature">
-
-            <div class="feature-icon">
-                💰
-            </div>
-
-            <h3>
-                Affordable
-            </h3>
-
-            <p>
-                Find options that match your student budget.
-            </p>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<footer id="contact">
-
-    <h2>
-        StudentStay
-    </h2>
-
-    <p>
-        Helping students find affordable accommodation.
-    </p>
-
-    <p>
-        © 2026 StudentStay. All rights reserved.
-    </p>
-
-</footer>
 
 
 <script>
 
-
-/* CURRENT SELECTED ACCOMMODATION */
-
-let selectedAccommodation = null;
+let accommodationId = null;
+let accommodation = null;
 
 
-/* VIEW DETAILS */
+/* GET ACCOMMODATION ID */
 
-function showDetails(
-    id,
-    name,
-    location,
-    price,
-    features
-) {
+const urlParams =
+    new URLSearchParams(window.location.search);
 
-    selectedAccommodation = {
-
-        id: id,
-
-        name: name,
-
-        location: location,
-
-        price: price,
-
-        features: features
-
-    };
+const idFromUrl =
+    urlParams.get("id");
 
 
-    document.getElementById("detailsName")
-        .textContent = name;
+if (idFromUrl) {
 
+    accommodationId =
+        Number(idFromUrl);
 
-    document.getElementById("detailsLocation")
-        .textContent =
-        "📍 Location: " + location;
+} else {
 
-
-    document.getElementById("detailsPrice")
-        .textContent =
-        "💰 Price: R" + price + " per month";
-
-
-    document.getElementById("detailsFeatures")
-        .textContent =
-        "Facilities: " + features;
-
-
-    document.getElementById("details")
-        .style.display = "block";
-
-
-    document.getElementById("details")
-        .scrollIntoView({
-            behavior: "smooth"
-        });
+    accommodationId =
+        Number(
+            localStorage.getItem(
+                "bookingAccommodationId"
+            )
+        );
 
 }
 
 
-/* BOOK ACCOMMODATION */
+/* LOAD ACCOMMODATION */
 
-function bookAccommodation() {
+async function loadAccommodation() {
 
-    if (!selectedAccommodation) {
+    if (!accommodationId) {
 
-        alert(
-            "Please select an accommodation first."
+        showError(
+            "No accommodation was selected."
         );
 
         return;
@@ -813,194 +312,273 @@ function bookAccommodation() {
     }
 
 
-    /* SAVE EVERYTHING NEEDED BY BOOKING PAGE */
-
-    localStorage.setItem(
-        "bookingAccommodationId",
-        String(selectedAccommodation.id)
-    );
-
-
-    localStorage.setItem(
-        "bookingName",
-        selectedAccommodation.name
-    );
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("accommodations")
+            .select("*")
+            .eq("id", accommodationId)
+            .single();
 
 
-    localStorage.setItem(
-        "bookingLocation",
-        selectedAccommodation.location
-    );
+    if (error) {
 
+        console.error(error);
 
-    localStorage.setItem(
-        "bookingPrice",
-        "R" +
-        selectedAccommodation.price +
-        " / month"
-    );
-
-
-    localStorage.setItem(
-        "bookingFeatures",
-        selectedAccommodation.features
-    );
-
-
-    /* GO TO BOOKING PAGE */
-
-    window.location.href =
-        "booking.html";
-
-}
-
-
-/* CLOSE DETAILS */
-
-function closeDetails() {
-
-    document.getElementById("details")
-        .style.display = "none";
-
-    selectedAccommodation = null;
-
-}
-
-
-/* SEARCH */
-
-function searchAccommodation() {
-
-    const search =
-        document.getElementById("searchInput")
-            .value
-            .toLowerCase()
-            .trim();
-
-
-    const maxPrice =
-        document.getElementById("priceInput")
-            .value;
-
-
-    const cards =
-        document.querySelectorAll(".card");
-
-
-    cards.forEach(function(card) {
-
-        const information =
-            card.textContent.toLowerCase();
-
-
-        const priceText =
-            card.querySelector(".price")
-                .textContent;
-
-
-        const price =
-            parseInt(
-                priceText.replace(/\D/g, "")
-            );
-
-
-        const locationMatch =
-            search === "" ||
-            information.includes(search);
-
-
-        const priceMatch =
-            maxPrice === "" ||
-            price <= Number(maxPrice);
-
-
-        if (
-            locationMatch &&
-            priceMatch
-        ) {
-
-            card.style.display = "";
-
-        } else {
-
-            card.style.display = "none";
-
-        }
-
-    });
-
-}
-
-
-/* FAVOURITES */
-
-function toggleFavourite(
-    id,
-    name,
-    location,
-    price
-) {
-
-    let favourites =
-        JSON.parse(
-            localStorage.getItem(
-                "studentFavourites"
-            )
-        ) || [];
-
-
-    const existingIndex =
-        favourites.findIndex(
-            function(item) {
-
-                return item.id === id;
-
-            }
+        showError(
+            "Could not load accommodation: " +
+            error.message
         );
 
-
-    if (existingIndex !== -1) {
-
-        favourites.splice(
-            existingIndex,
-            1
-        );
-
-        alert(
-            "Removed from favourites."
-        );
-
-    } else {
-
-        favourites.push({
-
-            id: id,
-
-            name: name,
-
-            location: location,
-
-            price:
-                "R" +
-                price +
-                " / month"
-
-        });
-
-
-        alert(
-            "Added to favourites ❤️"
-        );
+        return;
 
     }
 
 
-    localStorage.setItem(
-        "studentFavourites",
-        JSON.stringify(favourites)
-    );
+    if (!data) {
+
+        showError(
+            "Accommodation was not found in the database."
+        );
+
+        return;
+
+    }
+
+
+    accommodation = data;
+
+
+    document.getElementById(
+        "accommodationName"
+    ).textContent =
+        accommodation.name;
+
+
+    document.getElementById(
+        "accommodationLocation"
+    ).textContent =
+        "📍 " +
+        accommodation.location;
+
+
+    document.getElementById(
+        "accommodationPrice"
+    ).textContent =
+        "💰 R" +
+        accommodation.price +
+        " / month";
+
+
+    document.getElementById(
+        "accommodationFeatures"
+    ).textContent =
+        "🏠 " +
+        (
+            accommodation.features ||
+            "Facilities not specified"
+        );
+
+
+    document.getElementById(
+        "loading"
+    ).style.display =
+        "none";
+
+
+    document.getElementById(
+        "bookingContent"
+    ).style.display =
+        "block";
 
 }
+
+
+/* CONFIRM BOOKING */
+
+async function confirmBooking(event) {
+
+    event.preventDefault();
+
+
+    const statusMessage =
+        document.getElementById(
+            "statusMessage"
+        );
+
+
+    const {
+        data: {
+            user
+        },
+        error: userError
+    } =
+        await supabaseClient.auth.getUser();
+
+
+    if (userError || !user) {
+
+        statusMessage.textContent =
+            "Please login before booking.";
+
+        statusMessage.style.color =
+            "red";
+
+        return;
+
+    }
+
+
+    const moveInDate =
+        document.getElementById(
+            "moveInDate"
+        ).value;
+
+
+    const message =
+        document.getElementById(
+            "message"
+        ).value;
+
+
+    if (!moveInDate) {
+
+        statusMessage.textContent =
+            "Please select a move-in date.";
+
+        statusMessage.style.color =
+            "red";
+
+        return;
+
+    }
+
+
+    statusMessage.textContent =
+        "Confirming booking...";
+
+    statusMessage.style.color =
+        "#2563eb";
+
+
+    /*
+        IMPORTANT:
+
+        Your Supabase bookings table uses:
+
+        student_id
+        accommodation_id
+        nove_in_date
+        nessage
+        status
+
+        We therefore insert the accommodation ID,
+        NOT the accommodation name.
+    */
+
+
+    const bookingData = {
+
+        student_id: user.id,
+
+        accommodation_id:
+            accommodation.id,
+
+        nove_in_date:
+            moveInDate,
+
+        nessage:
+            message || null,
+
+        status:
+            "Confirmed"
+
+    };
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("bookings")
+            .insert([
+                bookingData
+            ])
+            .select();
+
+
+    if (error) {
+
+        console.error(
+            "Booking error:",
+            error
+        );
+
+
+        statusMessage.textContent =
+            "Booking failed: " +
+            error.message;
+
+        statusMessage.style.color =
+            "red";
+
+        return;
+
+    }
+
+
+    statusMessage.textContent =
+        "Booking confirmed successfully!";
+
+    statusMessage.style.color =
+        "green";
+
+
+    setTimeout(function() {
+
+        window.location.href =
+            "dashboard.html";
+
+    }, 1200);
+
+}
+
+
+/* ERROR */
+
+function showError(message) {
+
+    document.getElementById(
+        "loading"
+    ).style.display =
+        "none";
+
+
+    document.getElementById(
+        "bookingContent"
+    ).style.display =
+        "none";
+
+
+    const status =
+        document.getElementById(
+            "statusMessage"
+        );
+
+
+    status.textContent =
+        message;
+
+    status.style.color =
+        "red";
+
+}
+
+
+loadAccommodation();
 
 </script>
 
@@ -1008,4 +586,3 @@ function toggleFavourite(
 </body>
 
 </html>
-```
