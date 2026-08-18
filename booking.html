@@ -315,10 +315,10 @@ document.getElementById("moveInDate").min =
 
 /* CONFIRM BOOKING */
 
+```javascript
 async function confirmBooking(event) {
 
     event.preventDefault();
-
 
     const messageBox =
         document.getElementById("messageBox");
@@ -326,25 +326,17 @@ async function confirmBooking(event) {
     const confirmButton =
         document.getElementById("confirmButton");
 
-
-    messageBox.textContent = "";
-
     confirmButton.disabled = true;
-
-    confirmButton.textContent =
-        "Confirming...";
-
+    confirmButton.textContent = "Confirming...";
 
     try {
 
-
-        /* CHECK USER */
+        /* GET LOGGED-IN USER */
 
         const {
             data: { user },
             error: userError
-        } =
-        await supabaseClient.auth.getUser();
+        } = await supabaseClient.auth.getUser();
 
 
         if (userError) {
@@ -361,45 +353,22 @@ async function confirmBooking(event) {
         }
 
 
-        /* CHECK ACCOMMODATION ID */
+        /* GET ACCOMMODATION ID */
+
+        const accommodationId =
+            localStorage.getItem("bookingAccommodationId");
+
 
         if (!accommodationId) {
 
             throw new Error(
-                "Accommodation ID is missing. Please go back and select the accommodation again."
+                "Accommodation ID is missing. Please go back and select an accommodation again."
             );
 
         }
 
 
-        /* CHECK ACCOMMODATION EXISTS */
-
-        const {
-            data: accommodation,
-            error: accommodationError
-        } =
-        await supabaseClient
-            .from("accommodations")
-            .select("id, name, location, price")
-            .eq("id", Number(accommodationId))
-            .maybeSingle();
-
-
-        if (accommodationError) {
-            throw accommodationError;
-        }
-
-
-        if (!accommodation) {
-
-            throw new Error(
-                "Accommodation was not found in the database."
-            );
-
-        }
-
-
-        /* FORM DATA */
+        /* GET FORM DATA */
 
         const moveInDate =
             document.getElementById("moveInDate").value;
@@ -408,7 +377,16 @@ async function confirmBooking(event) {
             document.getElementById("ownerMessage").value;
 
 
-        /* INSERT BOOKING */
+        if (!moveInDate) {
+
+            throw new Error(
+                "Please select a move-in date."
+            );
+
+        }
+
+
+        /* INSERT DIRECTLY INTO BOOKINGS */
 
         const {
             data: booking,
@@ -418,11 +396,10 @@ async function confirmBooking(event) {
             .from("bookings")
             .insert({
 
-                student_id:
-                    user.id,
+                student_id: user.id,
 
                 accommodation_id:
-                    accommodation.id,
+                    Number(accommodationId),
 
                 nove_in_date:
                     moveInDate,
@@ -443,7 +420,7 @@ async function confirmBooking(event) {
         }
 
 
-        /* SAVE FOR DASHBOARD BACKUP */
+        /* SAVE BOOKING FOR DASHBOARD */
 
         let bookings =
             JSON.parse(
@@ -456,16 +433,20 @@ async function confirmBooking(event) {
             id:
                 booking.id,
 
+            accommodation_id:
+                Number(accommodationId),
+
             name:
-                accommodation.name,
+                localStorage.getItem("bookingName") ||
+                "Accommodation",
 
             location:
-                accommodation.location,
+                localStorage.getItem("bookingLocation") ||
+                "Location not available",
 
             price:
-                "R" +
-                accommodation.price +
-                " / month",
+                localStorage.getItem("bookingPrice") ||
+                "Price not available",
 
             date:
                 moveInDate,
@@ -507,9 +488,7 @@ async function confirmBooking(event) {
         }, 1200);
 
 
-    }
-
-    catch (error) {
+    } catch (error) {
 
         console.error(
             "BOOKING ERROR:",
@@ -535,10 +514,10 @@ async function confirmBooking(event) {
 
 }
 
+
 </script>
 
 
 </body>
 
 </html>
-```
