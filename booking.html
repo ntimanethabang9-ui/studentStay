@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -476,28 +475,22 @@ async function confirmBooking(event) {
 
     /* INSERT BOOKING */
 
-    const booking =
-    await supabaseClient
-        .from("bookings")
-        .insert({
+   const booking =
+await supabaseClient
+    .from("bookings")
+    .insert({
 
-            student_id:
-            user.id,
+        student_id: user.id,
 
-            accommodation_id:
-            accommodationId,
+        accommodation_id: accommodationId,
 
-            nove_in_date:
-            moveInDate,
+        nove_in_date: moveInDate,
 
-            nessage:
-            message || null,
+        nessage: message || null,
 
-            status:
-            "Confirmed"
+        status: "Confirmed"
 
-        });
-
+    });
 
     if (booking.error) {
 
