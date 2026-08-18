@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,18 +8,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>StudentStay | Student Accommodation</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script>
-const SUPABASE_URL = "https://xciewmepytfgdhyjkkne.supabase.co";
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-const SUPABASE_KEY = "sb_publishable_YeUsS4SbHTxBEGosZvDTWA_NAdK3FbU";
+    <script>
+        const SUPABASE_URL =
+            "https://xciewmepytfgdhyjkkne.supabase.co";
 
-const supabase = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-);
-</script>
+        const SUPABASE_KEY =
+            "sb_publishable_YeUsS4SbHTxBEGosZvDTWA_NAdK3FbU";
+
+        const supabaseClient =
+            window.supabase.createClient(
+                SUPABASE_URL,
+                SUPABASE_KEY
+            );
+    </script>
+
     <style>
 
         * {
@@ -32,8 +38,6 @@ const supabase = window.supabase.createClient(
             background: #f5f7fb;
             color: #1f2937;
         }
-
-        /* NAVIGATION */
 
         header {
             background: white;
@@ -69,8 +73,6 @@ const supabase = window.supabase.createClient(
             color: #2563eb;
         }
 
-        /* HERO */
-
         .hero {
             background: linear-gradient(135deg, #2563eb, #1d4ed8);
             color: white;
@@ -87,8 +89,6 @@ const supabase = window.supabase.createClient(
             font-size: 19px;
             margin-bottom: 35px;
         }
-
-        /* SEARCH */
 
         .search-box {
             background: white;
@@ -110,10 +110,6 @@ const supabase = window.supabase.createClient(
             outline: none;
         }
 
-        .search-box input:focus {
-            border-color: #2563eb;
-        }
-
         .search-button {
             padding: 15px 28px;
             border: none;
@@ -124,12 +120,6 @@ const supabase = window.supabase.createClient(
             font-weight: bold;
             cursor: pointer;
         }
-
-        .search-button:hover {
-            background: #374151;
-        }
-
-        /* SECTION */
 
         .section {
             padding: 70px 7%;
@@ -148,8 +138,6 @@ const supabase = window.supabase.createClient(
         .section-title p {
             color: #6b7280;
         }
-
-        /* CARDS */
 
         .accommodation {
             display: grid;
@@ -183,7 +171,6 @@ const supabase = window.supabase.createClient(
         .card h3 {
             font-size: 21px;
             margin-bottom: 12px;
-            color: #111827;
         }
 
         .location {
@@ -204,8 +191,6 @@ const supabase = window.supabase.createClient(
             margin-bottom: 15px;
         }
 
-        /* SAVE BUTTON */
-
         .save-button {
             width: 100%;
             padding: 12px;
@@ -223,8 +208,6 @@ const supabase = window.supabase.createClient(
             background: #eff6ff;
         }
 
-        /* DETAILS BUTTON */
-
         .details-button {
             width: 100%;
             padding: 12px;
@@ -240,8 +223,6 @@ const supabase = window.supabase.createClient(
         .details-button:hover {
             background: #1d4ed8;
         }
-
-        /* DETAILS */
 
         #details {
             display: none;
@@ -273,8 +254,6 @@ const supabase = window.supabase.createClient(
             margin-top: 10px;
         }
 
-        /* FEATURES */
-
         .features-section {
             background: white;
             padding: 70px 7%;
@@ -305,8 +284,6 @@ const supabase = window.supabase.createClient(
             line-height: 1.6;
         }
 
-        /* FOOTER */
-
         footer {
             background: #111827;
             color: white;
@@ -322,8 +299,6 @@ const supabase = window.supabase.createClient(
             color: #d1d5db;
             margin-bottom: 8px;
         }
-
-        /* MOBILE */
 
         @media (max-width: 900px) {
 
@@ -346,6 +321,8 @@ const supabase = window.supabase.createClient(
 
             nav {
                 gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
             }
 
             .hero {
@@ -378,8 +355,6 @@ const supabase = window.supabase.createClient(
 <body>
 
 
-<!-- NAVIGATION -->
-
 <header>
 
     <a href="index.html" class="logo">
@@ -388,9 +363,7 @@ const supabase = window.supabase.createClient(
 
     <nav>
 
-        <a href="#home">
-            Home
-        </a>
+        <a href="#home">Home</a>
 
         <a href="#accommodation">
             Accommodation
@@ -399,9 +372,10 @@ const supabase = window.supabase.createClient(
         <a href="#features">
             Why StudentStay
         </a>
+
         <a href="favourites.html">
-    ❤️ Favourites
-</a>
+            ❤️ Favourites
+        </a>
 
         <a href="#contact">
             Contact
@@ -412,8 +386,6 @@ const supabase = window.supabase.createClient(
 </header>
 
 
-<!-- HERO -->
-
 <section class="hero" id="home">
 
     <h1>
@@ -423,9 +395,6 @@ const supabase = window.supabase.createClient(
     <p>
         Affordable, safe and convenient accommodation for students.
     </p>
-
-
-    <!-- SEARCH -->
 
     <div class="search-box">
 
@@ -453,8 +422,6 @@ const supabase = window.supabase.createClient(
 </section>
 
 
-<!-- ACCOMMODATION -->
-
 <section class="section" id="accommodation">
 
     <div class="section-title">
@@ -473,7 +440,7 @@ const supabase = window.supabase.createClient(
     <div class="accommodation">
 
 
-        <!-- CARD 1 -->
+        <!-- ACCOMMODATION 1 - SUPABASE ID 1 -->
 
         <div class="card">
 
@@ -503,7 +470,6 @@ const supabase = window.supabase.createClient(
                     R3500 / month
                 </p>
 
-
                 <button
                     class="save-button"
                     onclick="toggleFavourite(
@@ -515,10 +481,10 @@ const supabase = window.supabase.createClient(
                     ❤️ Save
                 </button>
 
-
                 <button
                     class="details-button"
                     onclick="showDetails(
+                        1,
                         'Student Residence',
                         'Soshanguve',
                         '3500',
@@ -533,7 +499,7 @@ const supabase = window.supabase.createClient(
         </div>
 
 
-        <!-- CARD 2 -->
+        <!-- ACCOMMODATION 2 - SUPABASE ID 2 -->
 
         <div class="card">
 
@@ -563,7 +529,6 @@ const supabase = window.supabase.createClient(
                     R4000 / month
                 </p>
 
-
                 <button
                     class="save-button"
                     onclick="toggleFavourite(
@@ -575,10 +540,10 @@ const supabase = window.supabase.createClient(
                     ❤️ Save
                 </button>
 
-
                 <button
                     class="details-button"
                     onclick="showDetails(
+                        2,
                         'Modern Student Room',
                         'Pretoria',
                         '4000',
@@ -593,7 +558,7 @@ const supabase = window.supabase.createClient(
         </div>
 
 
-        <!-- CARD 3 -->
+        <!-- ACCOMMODATION 3 - SUPABASE ID 3 -->
 
         <div class="card">
 
@@ -623,7 +588,6 @@ const supabase = window.supabase.createClient(
                     R3000 / month
                 </p>
 
-
                 <button
                     class="save-button"
                     onclick="toggleFavourite(
@@ -635,10 +599,10 @@ const supabase = window.supabase.createClient(
                     ❤️ Save
                 </button>
 
-
                 <button
                     class="details-button"
                     onclick="showDetails(
+                        3,
                         'Affordable Apartment',
                         'Soshanguve',
                         '3000',
@@ -658,8 +622,6 @@ const supabase = window.supabase.createClient(
 </section>
 
 
-<!-- DETAILS -->
-
 <div id="details">
 
     <h2 id="detailsName"></h2>
@@ -670,14 +632,12 @@ const supabase = window.supabase.createClient(
 
     <p id="detailsFeatures"></p>
 
-
     <button
         class="details-button"
         onclick="bookAccommodation()"
     >
         Book Now
     </button>
-
 
     <button
         class="close-button"
@@ -688,8 +648,6 @@ const supabase = window.supabase.createClient(
 
 </div>
 
-
-<!-- WHY STUDENTSTAY -->
 
 <section
     class="features-section"
@@ -708,9 +666,7 @@ const supabase = window.supabase.createClient(
 
     </div>
 
-
     <div class="feature-container">
-
 
         <div class="feature">
 
@@ -762,13 +718,10 @@ const supabase = window.supabase.createClient(
 
         </div>
 
-
     </div>
 
 </section>
 
-
-<!-- FOOTER -->
 
 <footer id="contact">
 
@@ -790,18 +743,44 @@ const supabase = window.supabase.createClient(
 <script>
 
 
+/* CURRENT ACCOMMODATION */
+
+let selectedAccommodationId = null;
+
+
 /* BOOK ACCOMMODATION */
 
 function bookAccommodation() {
 
+    if (!selectedAccommodationId) {
+
+        alert("Please select an accommodation first.");
+
+        return;
+    }
+
+
     let name =
         document.getElementById("detailsName").textContent;
 
+
     let location =
-        document.getElementById("detailsLocation").textContent;
+        document.getElementById("detailsLocation")
+        .textContent
+        .replace("📍 Location: ", "");
+
 
     let price =
-        document.getElementById("detailsPrice").textContent;
+        document.getElementById("detailsPrice")
+        .textContent
+        .replace("💰 Price: R", "")
+        .replace(" per month", "");
+
+
+    localStorage.setItem(
+        "bookingAccommodationId",
+        selectedAccommodationId
+    );
 
 
     localStorage.setItem(
@@ -809,14 +788,16 @@ function bookAccommodation() {
         name
     );
 
+
     localStorage.setItem(
         "bookingLocation",
         location
     );
 
+
     localStorage.setItem(
         "bookingPrice",
-        price
+        "R" + price + " / month"
     );
 
 
@@ -826,7 +807,7 @@ function bookAccommodation() {
 }
 
 
-/* SEARCH AND PRICE FILTER */
+/* SEARCH */
 
 function searchAccommodation() {
 
@@ -894,11 +875,15 @@ function searchAccommodation() {
 /* VIEW DETAILS */
 
 function showDetails(
+    id,
     name,
     location,
     price,
     features
 ) {
+
+    selectedAccommodationId = id;
+
 
     document
         .getElementById("detailsName")
@@ -945,10 +930,12 @@ function closeDetails() {
         .getElementById("details")
         .style.display = "none";
 
+    selectedAccommodationId = null;
+
 }
 
 
-/* SAVE / UNSAVE FAVOURITE */
+/* FAVOURITES */
 
 function toggleFavourite(
     name,
@@ -1020,3 +1007,4 @@ function toggleFavourite(
 </body>
 
 </html>
+```
