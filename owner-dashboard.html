@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -25,7 +26,6 @@ window.supabase.createClient(
 );
 
 </script>
-
 
 <style>
 
@@ -125,10 +125,6 @@ textarea {
     cursor: pointer;
 }
 
-.add-button:hover {
-    background: #1d4ed8;
-}
-
 .message {
     margin-top: 15px;
     font-weight: bold;
@@ -188,10 +184,70 @@ textarea {
     cursor: pointer;
 }
 
+/* BOOKINGS */
+
+.booking {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    background: #fafafa;
+}
+
+.booking h3 {
+    color: #2563eb;
+    margin-bottom: 12px;
+}
+
+.booking p {
+    margin-bottom: 8px;
+}
+
+.booking-status {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+    margin: 8px 0 15px;
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.booking-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.accept-button,
+.reject-button {
+    flex: 1;
+    padding: 11px;
+    border: none;
+    border-radius: 7px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.accept-button {
+    background: #16a34a;
+}
+
+.reject-button {
+    background: #dc2626;
+}
+
 .empty {
     color: #6b7280;
     text-align: center;
     padding: 20px;
+}
+
+.error {
+    color: #dc2626;
+    padding: 15px;
+    background: #fee2e2;
+    border-radius: 8px;
 }
 
 @media (max-width: 800px) {
@@ -204,15 +260,17 @@ textarea {
         padding: 18px 20px;
     }
 
+    .booking-buttons {
+        flex-direction: column;
+    }
+
 }
 
 </style>
 
 </head>
 
-
 <body>
-
 
 <header>
 
@@ -232,24 +290,22 @@ Logout
 
 <div class="container">
 
-
 <h1>
 Owner Dashboard
 </h1>
 
 <p class="subtitle">
-Add and manage your accommodation listings.
+Add and manage your accommodation listings and bookings.
 </p>
 
 
-<!-- ADD PROPERTY -->
+<!-- ADD ACCOMMODATION -->
 
 <div class="box">
 
 <h2>
 Add Accommodation
 </h2>
-
 
 <label>
 Accommodation Name
@@ -261,7 +317,6 @@ id="name"
 placeholder="e.g. Student Residence"
 >
 
-
 <label>
 Location
 </label>
@@ -271,7 +326,6 @@ type="text"
 id="location"
 placeholder="e.g. Soshanguve"
 >
-
 
 <label>
 Monthly Price
@@ -283,7 +337,6 @@ id="price"
 placeholder="e.g. 3500"
 >
 
-
 <label>
 Features
 </label>
@@ -292,7 +345,6 @@ Features
 id="features"
 placeholder="e.g. Wi-Fi, Security, Furnished"
 ></textarea>
-
 
 <label>
 Image URL
@@ -304,14 +356,12 @@ id="image_url"
 placeholder="https://example.com/image.jpg"
 >
 
-
 <button
 class="add-button"
 onclick="addAccommodation()"
 >
 Add Accommodation
 </button>
-
 
 <div
 id="message"
@@ -321,7 +371,7 @@ class="message"
 </div>
 
 
-<!-- MY PROPERTIES -->
+<!-- MY ACCOMMODATION -->
 
 <div class="box">
 
@@ -343,11 +393,29 @@ Loading your properties...
 </div>
 
 
+<!-- BOOKINGS -->
+
+<div class="box">
+
+<h2>
+📋 Student Bookings
+</h2>
+
+<div id="bookings">
+
+<p class="empty">
+Loading bookings...
+</p>
+
+</div>
+
+</div>
+
+
 </div>
 
 
 <script>
-
 
 let currentUser = null;
 
@@ -364,7 +432,6 @@ async function checkUser() {
         .auth
         .getUser();
 
-
     if (
         error ||
         !data.user
@@ -377,12 +444,12 @@ async function checkUser() {
 
     }
 
-
     currentUser =
         data.user;
 
+    await loadProperties();
 
-    loadProperties();
+    await loadBookings();
 
 }
 
@@ -401,13 +468,11 @@ async function addAccommodation() {
 
     }
 
-
     const name =
         document
         .getElementById("name")
         .value
         .trim();
-
 
     const location =
         document
@@ -415,12 +480,10 @@ async function addAccommodation() {
         .value
         .trim();
 
-
     const price =
         document
         .getElementById("price")
         .value;
-
 
     const features =
         document
@@ -428,18 +491,15 @@ async function addAccommodation() {
         .value
         .trim();
 
-
     const image_url =
         document
         .getElementById("image_url")
         .value
         .trim();
 
-
     const message =
         document
         .getElementById("message");
-
 
     if (
         !name ||
@@ -457,13 +517,11 @@ async function addAccommodation() {
 
     }
 
-
     message.textContent =
         "Adding accommodation...";
 
     message.style.color =
         "#2563eb";
-
 
     const {
         error
@@ -480,13 +538,13 @@ async function addAccommodation() {
 
             features: features,
 
-            image_url: image_url || null,
+            image_url:
+                image_url || null,
 
             owner_id:
                 currentUser.id
 
         });
-
 
     if (error) {
 
@@ -503,36 +561,19 @@ async function addAccommodation() {
 
     }
 
-
     message.textContent =
         "Accommodation added successfully!";
 
     message.style.color =
         "green";
 
+    document.getElementById("name").value = "";
+    document.getElementById("location").value = "";
+    document.getElementById("price").value = "";
+    document.getElementById("features").value = "";
+    document.getElementById("image_url").value = "";
 
-    document
-        .getElementById("name")
-        .value = "";
-
-    document
-        .getElementById("location")
-        .value = "";
-
-    document
-        .getElementById("price")
-        .value = "";
-
-    document
-        .getElementById("features")
-        .value = "";
-
-    document
-        .getElementById("image_url")
-        .value = "";
-
-
-    loadProperties();
+    await loadProperties();
 
 }
 
@@ -544,7 +585,6 @@ async function loadProperties() {
     const properties =
         document
         .getElementById("properties");
-
 
     const {
         data,
@@ -564,7 +604,6 @@ async function loadProperties() {
             }
         );
 
-
     if (error) {
 
         console.error(error);
@@ -578,7 +617,6 @@ async function loadProperties() {
         return;
 
     }
-
 
     if (
         !data ||
@@ -594,9 +632,7 @@ async function loadProperties() {
 
     }
 
-
     properties.innerHTML = "";
-
 
     data.forEach(function(property) {
 
@@ -606,11 +642,9 @@ async function loadProperties() {
         card.className =
             "property";
 
-
         const image =
             property.image_url ||
             "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80";
-
 
         card.innerHTML = `
 
@@ -648,10 +682,386 @@ async function loadProperties() {
 
         `;
 
-
         properties.appendChild(card);
 
     });
+
+}
+
+
+/* LOAD BOOKINGS */
+
+async function loadBookings() {
+
+    const bookingsContainer =
+        document.getElementById("bookings");
+
+    bookingsContainer.innerHTML =
+        "<p class='empty'>Loading bookings...</p>";
+
+
+    /*
+       First get this owner's accommodation.
+    */
+
+    const {
+        data: accommodations,
+        error: accommodationError
+    } =
+    await supabaseClient
+        .from("accommodations")
+        .select("id, name")
+        .eq(
+            "owner_id",
+            currentUser.id
+        );
+
+
+    if (accommodationError) {
+
+        console.error(accommodationError);
+
+        bookingsContainer.innerHTML =
+            "<p class='error'>" +
+            "Could not load accommodations: " +
+            accommodationError.message +
+            "</p>";
+
+        return;
+
+    }
+
+
+    if (
+        !accommodations ||
+        accommodations.length === 0
+    ) {
+
+        bookingsContainer.innerHTML =
+            "<p class='empty'>" +
+            "No bookings yet." +
+            "</p>";
+
+        return;
+
+    }
+
+
+    const accommodationIds =
+        accommodations.map(function(item) {
+
+            return item.id;
+
+        });
+
+
+    /*
+       Get bookings for those accommodations.
+    */
+
+    const {
+        data: bookings,
+        error: bookingsError
+    } =
+    await supabaseClient
+        .from("bookings")
+        .select("*")
+        .in(
+            "accommodation_id",
+            accommodationIds
+        )
+        .order(
+            "id",
+            {
+                ascending: false
+            }
+        );
+
+
+    if (bookingsError) {
+
+        console.error(bookingsError);
+
+        bookingsContainer.innerHTML =
+            "<p class='error'>" +
+            "Could not load bookings: " +
+            bookingsError.message +
+            "</p>";
+
+        return;
+
+    }
+
+
+    if (
+        !bookings ||
+        bookings.length === 0
+    ) {
+
+        bookingsContainer.innerHTML =
+            "<p class='empty'>" +
+            "No student bookings yet." +
+            "</p>";
+
+        return;
+
+    }
+
+
+    /*
+       Get student profiles separately.
+    */
+
+    const studentIds =
+        bookings
+        .map(function(booking) {
+
+            return booking.student_id;
+
+        })
+        .filter(Boolean);
+
+
+    let profiles = [];
+
+
+    if (studentIds.length > 0) {
+
+        const {
+            data: profileData,
+            error: profileError
+        } =
+        await supabaseClient
+            .from("profiles")
+            .select(
+                "id, full_name, phone, student_number, university"
+            )
+            .in(
+                "id",
+                studentIds
+            );
+
+
+        if (profileError) {
+
+            console.error(
+                "Could not load student profiles:",
+                profileError
+            );
+
+        } else {
+
+            profiles =
+                profileData || [];
+
+        }
+
+    }
+
+
+    bookingsContainer.innerHTML = "";
+
+
+    bookings.forEach(function(booking) {
+
+        const accommodation =
+            accommodations.find(
+                function(item) {
+
+                    return (
+                        item.id ===
+                        booking.accommodation_id
+                    );
+
+                }
+            );
+
+
+        const profile =
+            profiles.find(
+                function(item) {
+
+                    return (
+                        item.id ===
+                        booking.student_id
+                    );
+
+                }
+            );
+
+
+        const studentName =
+            profile &&
+            profile.full_name
+                ? profile.full_name
+                : "Student";
+
+
+        const studentNumber =
+            profile &&
+            profile.student_number
+                ? profile.student_number
+                : "Not provided";
+
+
+        const phone =
+            profile &&
+            profile.phone
+                ? profile.phone
+                : "Not provided";
+
+
+        const university =
+            profile &&
+            profile.university
+                ? profile.university
+                : "Not provided";
+
+
+        const accommodationName =
+            accommodation
+                ? accommodation.name
+                : "Accommodation";
+
+
+        const status =
+            booking.status ||
+            "Pending";
+
+
+        const card =
+            document.createElement("div");
+
+        card.className =
+            "booking";
+
+
+        card.innerHTML = `
+
+            <h3>
+                🏠 ${accommodationName}
+            </h3>
+
+            <p>
+                <strong>Student:</strong>
+                ${studentName}
+            </p>
+
+            <p>
+                <strong>Student Number:</strong>
+                ${studentNumber}
+            </p>
+
+            <p>
+                <strong>University:</strong>
+                ${university}
+            </p>
+
+            <p>
+                <strong>Phone:</strong>
+                ${phone}
+            </p>
+
+            <p>
+                <strong>Move-in Date:</strong>
+                ${booking.move_in_date || "Not provided"}
+            </p>
+
+            <p>
+                <strong>Message:</strong>
+                ${booking.message || "No message"}
+            </p>
+
+            <div class="booking-status">
+                Status: ${status}
+            </div>
+
+            <div class="booking-buttons">
+
+                <button
+                    class="accept-button"
+                    onclick="updateBookingStatus(${booking.id}, 'Accepted')"
+                >
+                    ✅ Accept
+                </button>
+
+                <button
+                    class="reject-button"
+                    onclick="updateBookingStatus(${booking.id}, 'Rejected')"
+                >
+                    ❌ Reject
+                </button>
+
+            </div>
+
+        `;
+
+
+        bookingsContainer.appendChild(card);
+
+    });
+
+}
+
+
+/* UPDATE BOOKING STATUS */
+
+async function updateBookingStatus(
+    bookingId,
+    newStatus
+) {
+
+    const confirmed =
+        confirm(
+            "Change this booking to " +
+            newStatus +
+            "?"
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    const {
+        error
+    } =
+    await supabaseClient
+        .from("bookings")
+        .update({
+            status: newStatus
+        })
+        .eq(
+            "id",
+            bookingId
+        );
+
+
+    if (error) {
+
+        console.error(error);
+
+        alert(
+            "Could not update booking: " +
+            error.message
+        );
+
+        return;
+
+    }
+
+
+    alert(
+        "Booking " +
+        newStatus.toLowerCase() +
+        " successfully."
+    );
+
+
+    await loadBookings();
 
 }
 
@@ -706,7 +1116,9 @@ async function deleteAccommodation(id) {
     );
 
 
-    loadProperties();
+    await loadProperties();
+
+    await loadBookings();
 
 }
 
@@ -719,7 +1131,6 @@ async function logout() {
         .auth
         .signOut();
 
-
     window.location.href =
         "login.html";
 
@@ -731,7 +1142,6 @@ async function logout() {
 checkUser();
 
 </script>
-
 
 </body>
 
