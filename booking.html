@@ -224,17 +224,22 @@ let bookingPrice =
     localStorage.getItem("bookingPrice");
 
 
-document.getElementById("bookingName").textContent =
+document.getElementById("bookingName")
+    .textContent =
     bookingName || "Accommodation";
 
-document.getElementById("bookingLocation").textContent =
+
+document.getElementById("bookingLocation")
+    .textContent =
     bookingLocation || "";
 
-document.getElementById("bookingPrice").textContent =
+
+document.getElementById("bookingPrice")
+    .textContent =
     bookingPrice || "";
 
 
-/* GET SAVED STUDENT INFORMATION */
+/* LOAD STUDENT INFORMATION */
 
 let savedName =
     localStorage.getItem("studentName");
@@ -244,13 +249,18 @@ let savedEmail =
 
 
 if (savedName) {
-    document.getElementById("studentName").value =
-        savedName;
+
+    document.getElementById("studentName")
+        .value = savedName;
+
 }
 
+
 if (savedEmail) {
-    document.getElementById("studentEmail").value =
-        savedEmail;
+
+    document.getElementById("studentEmail")
+        .value = savedEmail;
+
 }
 
 
@@ -262,16 +272,60 @@ function confirmBooking(event) {
 
 
     let student =
-        document.getElementById("studentName").value;
+        document.getElementById("studentName").value.trim();
 
     let email =
-        document.getElementById("studentEmail").value;
+        document.getElementById("studentEmail").value.trim();
 
     let date =
         document.getElementById("moveInDate").value;
 
     let message =
-        document.getElementById("messageText").value;
+        document.getElementById("messageText").value.trim();
+
+
+    /* GET EXISTING BOOKINGS */
+
+    let bookings =
+        JSON.parse(
+            localStorage.getItem("studentBookings")
+        ) || [];
+
+
+    /* CREATE NEW BOOKING */
+
+    let newBooking = {
+
+        name: bookingName,
+
+        location: bookingLocation,
+
+        price: bookingPrice,
+
+        student: student,
+
+        email: email,
+
+        date: date,
+
+        message: message,
+
+        status: "Confirmed"
+
+    };
+
+
+    /* ADD NEW BOOKING */
+
+    bookings.push(newBooking);
+
+
+    /* SAVE ALL BOOKINGS */
+
+    localStorage.setItem(
+        "studentBookings",
+        JSON.stringify(bookings)
+    );
 
 
     /* SAVE STUDENT INFORMATION */
@@ -287,60 +341,16 @@ function confirmBooking(event) {
     );
 
 
-    /* GET EXISTING BOOKINGS */
-
-    let bookings =
-        JSON.parse(
-            localStorage.getItem("bookings")
-        ) || [];
-
-
-    /* CREATE NEW BOOKING */
-
-    let newBooking = {
-
-        id: Date.now(),
-
-        accommodation: bookingName,
-
-        location: bookingLocation,
-
-        price: bookingPrice,
-
-        student: student,
-
-        email: email,
-
-        moveInDate: date,
-
-        message: message,
-
-        status: "Confirmed"
-
-    };
-
-
-    /* ADD NEW BOOKING TO THE LIST */
-
-    bookings.push(newBooking);
-
-
-    /* SAVE ALL BOOKINGS */
-
-    localStorage.setItem(
-        "bookings",
-        JSON.stringify(bookings)
-    );
-
-
     /* SHOW SUCCESS MESSAGE */
 
     document.getElementById("message")
         .textContent =
         "Booking confirmed successfully!";
 
+
     document.getElementById("message")
-        .style.color = "green";
+        .style.color =
+        "green";
 
 
     /* GO TO DASHBOARD */
@@ -350,13 +360,11 @@ function confirmBooking(event) {
         window.location.href =
             "dashboard.html";
 
-    }, 1500);
+    }, 1000);
 
 }
 
 </script>
-
-
 </body>
 
 </html>
