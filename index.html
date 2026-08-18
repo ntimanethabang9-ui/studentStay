@@ -7,25 +7,71 @@
 <body>
 
     <h1>StudentStay</h1>
-
     <p>Find affordable student accommodation.</p>
-
-    <h2>Search</h2>
 
     <input id="searchInput" type="text" placeholder="Enter location">
 
+    <input id="priceInput" type="number" placeholder="Maximum price">
+
     <button onclick="searchAccommodation()">Search</button>
 
-    <div id="result"></div>
+    <h2>Accommodation</h2>
+
+    <div class="card">
+        <h3>Student Residence</h3>
+        <p>Soshanguve</p>
+        <p class="price">3500</p>
+    </div>
+
+    <div class="card">
+        <h3>Modern Student Room</h3>
+        <p>Pretoria</p>
+        <p class="price">4000</p>
+    </div>
+
+    <div class="card">
+        <h3>Affordable Apartment</h3>
+        <p>Soshanguve</p>
+        <p class="price">3000</p>
+    </div>
 
     <script>
 
         function searchAccommodation() {
 
-            let location = document.getElementById("searchInput").value;
+            let location = document
+                .getElementById("searchInput")
+                .value
+                .toLowerCase()
+                .trim();
 
-            document.getElementById("result").innerHTML =
-                "You searched for: " + location;
+            let maxPrice = document
+                .getElementById("priceInput")
+                .value;
+
+            let cards = document.querySelectorAll(".card");
+
+            cards.forEach(function(card) {
+
+                let text = card.textContent.toLowerCase();
+
+                let price = Number(
+                    card.querySelector(".price").textContent
+                );
+
+                let locationMatches =
+                    location === "" || text.includes(location);
+
+                let priceMatches =
+                    maxPrice === "" || price <= Number(maxPrice);
+
+                if (locationMatches && priceMatches) {
+                    card.style.display = "block";
+                } else {
+                    card.style.display = "none";
+                }
+
+            });
 
         }
 
