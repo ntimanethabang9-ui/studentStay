@@ -460,18 +460,17 @@ async function registerUser(event) {
             authData.user;
 
 
-      const {
+ const {
     error: profileError
 } = await supabaseClient
     .from("profiles")
     .insert({
         id: user.id,
-        name: name,
-        email: email,
+        full_name: name,
         phone: phone,
         student_number: studentNumber,
         university: university
-    }); 
+    });
 
         if (profileError) {
 
