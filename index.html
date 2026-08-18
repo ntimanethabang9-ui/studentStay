@@ -749,51 +749,63 @@ let selectedAccommodationId = null;
 
 
 /* BOOK ACCOMMODATION */
-
 function bookAccommodation() {
 
-    if (!selectedAccommodationId) {
-
-        alert("Please select an accommodation first.");
-
-        return;
-    }
-
-
-    let name =
+    const name =
         document.getElementById("detailsName").textContent;
 
-
-    let location =
-        document.getElementById("detailsLocation")
-        .textContent
+    const location =
+        document.getElementById("detailsLocation").textContent
         .replace("📍 Location: ", "");
 
+    const priceText =
+        document.getElementById("detailsPrice").textContent;
 
-    let price =
-        document.getElementById("detailsPrice")
-        .textContent
+    const price =
+        priceText
         .replace("💰 Price: R", "")
         .replace(" per month", "");
 
 
+    let accommodationId = null;
+
+
+    if (name === "Student Residence") {
+        accommodationId = 1;
+    }
+
+    if (name === "Modern Student Room") {
+        accommodationId = 2;
+    }
+
+    if (name === "Affordable Apartment") {
+        accommodationId = 3;
+    }
+
+
+    if (!accommodationId) {
+
+        alert("Could not identify this accommodation.");
+
+        return;
+
+    }
+
+
     localStorage.setItem(
         "bookingAccommodationId",
-        selectedAccommodationId
+        accommodationId
     );
-
 
     localStorage.setItem(
         "bookingName",
         name
     );
 
-
     localStorage.setItem(
         "bookingLocation",
         location
     );
-
 
     localStorage.setItem(
         "bookingPrice",
@@ -805,6 +817,7 @@ function bookAccommodation() {
         "booking.html";
 
 }
+
 
 
 /* SEARCH */
