@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>StudentStay | My Favourites</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            color: #1f2937;
+        }
+
+        header {
+            background: white;
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .logo {
+            color: #2563eb;
+            font-size: 27px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        nav {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #374151;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #2563eb;
+        }
+
+        .container {
+            width: 86%;
+            max-width: 1200px;
+            margin: 40px auto;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .page-title h1 {
+            font-size: 35px;
+            margin-bottom: 10px;
+        }
+
+        .page-title p {
+            color: #6b7280;
+        }
+
+        .favourites {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .favourite-card {
+            background: white;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .favourite-content {
+            padding: 22px;
+        }
+
+        .favourite-content h2 {
+            color: #2563eb;
+            margin-bottom: 12px;
+        }
+
+        .favourite-content p {
+            margin-bottom: 10px;
+            color: #4b5563;
+        }
+
+        .price {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2563eb !important;
+        }
+
+        .remove-button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 8px;
+            background: #dc2626;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .remove-button:hover {
+            background: #b91c1c;
+        }
+
+        .book-button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 8px;
+            background: #2563eb;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .book-button:hover {
+            background: #1d4ed8;
+        }
+
+        .empty {
+            background: white;
+            padding: 50px;
+            text-align: center;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            grid-column: 1 / -1;
+        }
+
+        .empty h2 {
+            margin-bottom: 12px;
+        }
+
+        .empty p {
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+
+        .find-button {
+            display: inline-block;
+            padding: 13px 22px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        footer {
+            margin-top: 60px;
+            background: #111827;
+            color: white;
+            padding: 35px;
+            text-align: center;
+        }
+
+        footer p {
+            margin-top: 8px;
+            color: #d1d5db;
+        }
+
+        @media (max-width: 900px) {
+
+            .favourites {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .favourites {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                width: 92%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <a href="index.html" class="logo">
+        StudentStay
+    </a>
+
+    <nav>
+
+        <a href="index.html">
+            Home
+        </a>
+
+        <a href="dashboard.html">
+            My Dashboard
+        </a>
+
+        <a href="favourites.html">
+            ❤️ Favourites
+        </a>
+
+    </nav>
+
+</header>
+
+
+<div class="container">
+
+
+    <div class="page-title">
+
+        <h1>
+            ❤️ My Favourites
+        </h1>
+
+        <p>
+            Accommodation you saved for later.
+        </p>
+
+    </div>
+
+
+    <div
+        id="favourites"
+        class="favourites"
+    ></div>
+
+
+</div>
+
+
+<footer>
+
+    <h2>
+        StudentStay
+    </h2>
+
+    <p>
+        Helping students find affordable accommodation.
+    </p>
+
+    <p>
+        © 2026 StudentStay. All rights reserved.
+    </p>
+
+</footer>
+
+
+<script>
+
+
+function loadFavourites() {
+
+    let favourites =
+        JSON.parse(
+            localStorage.getItem("studentFavourites")
+        ) || [];
+
+
+    let container =
+        document.getElementById("favourites");
+
+
+    container.innerHTML = "";
+
+
+    if (favourites.length === 0) {
+
+        container.innerHTML = `
+
+            <div class="empty">
+
+                <h2>
+                    No Favourite Accommodation
+                </h2>
+
+                <p>
+                    You haven't saved any accommodation yet.
+                </p>
+
+                <a
+                    href="index.html#accommodation"
+                    class="find-button"
+                >
+                    Find Accommodation
+                </a>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    favourites.forEach(function(item, index) {
+
+        let card =
+            document.createElement("div");
+
+
+        card.className =
+            "favourite-card";
+
+
+        card.innerHTML = `
+
+            <div class="favourite-content">
+
+                <h2>
+                    ${item.name}
+                </h2>
+
+                <p>
+                    📍 ${item.location}
+                </p>
+
+                <p class="price">
+                    💰 ${item.price}
+                </p>
+
+                <button
+                    class="book-button"
+                    onclick="bookAccommodation(${index})"
+                >
+                    Book Now
+                </button>
+
+                <button
+                    class="remove-button"
+                    onclick="removeFavourite(${index})"
+                >
+                    Remove Favourite
+                </button>
+
+            </div>
+
+        `;
+
+
+        container.appendChild(card);
+
+    });
+
+}
+
+
+function removeFavourite(index) {
+
+    let favourites =
+        JSON.parse(
+            localStorage.getItem("studentFavourites")
+        ) || [];
+
+
+    favourites.splice(index, 1);
+
+
+    localStorage.setItem(
+        "studentFavourites",
+        JSON.stringify(favourites)
+    );
+
+
+    loadFavourites();
+
+}
+
+
+function bookAccommodation(index) {
+
+    let favourites =
+        JSON.parse(
+            localStorage.getItem("studentFavourites")
+        ) || [];
+
+
+    let accommodation =
+        favourites[index];
+
+
+    localStorage.setItem(
+        "bookingName",
+        accommodation.name
+    );
+
+
+    localStorage.setItem(
+        "bookingLocation",
+        accommodation.location
+    );
+
+
+    localStorage.setItem(
+        "bookingPrice",
+        accommodation.price
+    );
+
+
+    window.location.href =
+        "booking.html";
+
+}
+
+
+loadFavourites();
+
+</script>
+
+
+</body>
+
+</html>
