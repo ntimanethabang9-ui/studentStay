@@ -1,8 +1,8 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -11,16 +11,21 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
-        const SUPABASE_URL = "https://xciewmepytfgdhyjkkne.supabase.co";
+
+        const SUPABASE_URL =
+            "https://xciewmepytfgdhyjkkne.supabase.co";
 
         const SUPABASE_KEY =
             "sb_publishable_YeUsS4SbHTxBEGosZvDTWA_NAdK3FbU";
 
-        const supabaseClient = window.supabase.createClient(
-            SUPABASE_URL,
-            SUPABASE_KEY
-        );
+        const supabaseClient =
+            window.supabase.createClient(
+                SUPABASE_URL,
+                SUPABASE_KEY
+            );
+
     </script>
+
 
     <style>
 
@@ -34,7 +39,6 @@
             font-family: Arial, sans-serif;
             background: #f5f7fb;
             color: #1f2937;
-            min-height: 100vh;
         }
 
         header {
@@ -76,8 +80,8 @@
 
         .accommodation-info {
             background: #eff6ff;
-            border-radius: 10px;
             padding: 20px;
+            border-radius: 10px;
             margin-bottom: 25px;
         }
 
@@ -121,10 +125,10 @@
         .confirm-button {
             width: 100%;
             padding: 14px;
-            border: none;
-            border-radius: 8px;
             background: #2563eb;
             color: white;
+            border: none;
+            border-radius: 8px;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
@@ -132,6 +136,11 @@
 
         .confirm-button:hover {
             background: #1d4ed8;
+        }
+
+        .confirm-button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
         }
 
         .back-button {
@@ -161,24 +170,13 @@
             color: #dc2626;
         }
 
-        @media (max-width: 600px) {
-
-            .container {
-                width: 94%;
-                margin: 25px auto;
-            }
-
-            .booking-box {
-                padding: 25px;
-            }
-
-        }
-
     </style>
 
 </head>
 
+
 <body>
+
 
 <header>
 
@@ -193,7 +191,9 @@
 
     <div class="booking-box">
 
-        <h1>Confirm Your Booking</h1>
+        <h1>
+            Confirm Your Booking
+        </h1>
 
         <p class="subtitle">
             Complete the details below to confirm your accommodation.
@@ -235,7 +235,7 @@
             </label>
 
             <textarea
-                id="message"
+                id="ownerMessage"
                 placeholder="Write a message to the accommodation owner (optional)"
             ></textarea>
 
@@ -271,36 +271,42 @@
 
 <script>
 
-let selectedName =
+
+/* GET SELECTED ACCOMMODATION */
+
+const accommodationId =
+    localStorage.getItem("bookingAccommodationId");
+
+const accommodationName =
     localStorage.getItem("bookingName");
 
-let selectedLocation =
+const accommodationLocation =
     localStorage.getItem("bookingLocation");
 
-let selectedPrice =
+const accommodationPrice =
     localStorage.getItem("bookingPrice");
 
 
-/* DISPLAY SELECTED ACCOMMODATION */
+/* DISPLAY ACCOMMODATION */
 
 document.getElementById("accommodationName")
     .textContent =
-    selectedName || "Accommodation";
+    accommodationName || "Accommodation";
 
 
 document.getElementById("accommodationLocation")
     .textContent =
-    selectedLocation || "📍 Location not available";
+    accommodationLocation || "📍 Location not available";
 
 
 document.getElementById("accommodationPrice")
     .textContent =
-    selectedPrice || "💰 Price not available";
+    accommodationPrice || "💰 Price not available";
 
 
-/* SET MINIMUM DATE TO TODAY */
+/* TODAY'S DATE */
 
-let today =
+const today =
     new Date().toISOString().split("T")[0];
 
 document.getElementById("moveInDate").min =
@@ -314,29 +320,31 @@ async function confirmBooking(event) {
     event.preventDefault();
 
 
-    let messageBox =
+    const messageBox =
         document.getElementById("messageBox");
 
-    let confirmButton =
+    const confirmButton =
         document.getElementById("confirmButton");
 
 
     messageBox.textContent = "";
-    messageBox.className = "message";
-
 
     confirmButton.disabled = true;
-    confirmButton.textContent = "Confirming...";
+
+    confirmButton.textContent =
+        "Confirming...";
 
 
     try {
 
-        /* GET LOGGED-IN USER */
+
+        /* CHECK USER */
 
         const {
             data: { user },
             error: userError
-        } = await supabaseClient.auth.getUser();
+        } =
+        await supabaseClient.auth.getUser();
 
 
         if (userError) {
@@ -347,22 +355,33 @@ async function confirmBooking(event) {
         if (!user) {
 
             throw new Error(
-                "You must be logged in before making a booking."
+                "You are not logged in. Please login first."
             );
 
         }
 
 
-        /* GET ACCOMMODATION FROM DATABASE */
+        /* CHECK ACCOMMODATION ID */
+
+        if (!accommodationId) {
+
+            throw new Error(
+                "Accommodation ID is missing. Please go back and select the accommodation again."
+            );
+
+        }
+
+
+        /* CHECK ACCOMMODATION EXISTS */
 
         const {
             data: accommodation,
             error: accommodationError
-        } = await supabaseClient
+        } =
+        await supabaseClient
             .from("accommodations")
             .select("id, name, location, price")
-            .eq("name", selectedName)
-            .limit(1)
+            .eq("id", Number(accommodationId))
             .maybeSingle();
 
 
@@ -374,58 +393,47 @@ async function confirmBooking(event) {
         if (!accommodation) {
 
             throw new Error(
-                "The selected accommodation could not be found."
+                "Accommodation was not found in the database."
             );
 
         }
 
 
-        /* GET FORM DATA */
+        /* FORM DATA */
 
-        let moveInDate =
+        const moveInDate =
             document.getElementById("moveInDate").value;
 
-        let ownerMessage =
-            document.getElementById("message").value;
+        const ownerMessage =
+            document.getElementById("ownerMessage").value;
 
 
-        /*
-           INSERT INTO BOOKINGS
-
-           Your database columns are:
-
-           id
-           student_id
-           accommodation_id
-           nove_in_date
-           nessage
-           status
-        */
+        /* INSERT BOOKING */
 
         const {
             data: booking,
             error: bookingError
-        } = await supabaseClient
+        } =
+        await supabaseClient
             .from("bookings")
-            .insert([
+            .insert({
 
-                {
-                    student_id: user.id,
+                student_id:
+                    user.id,
 
-                    accommodation_id:
-                        accommodation.id,
+                accommodation_id:
+                    accommodation.id,
 
-                    nove_in_date:
-                        moveInDate,
+                nove_in_date:
+                    moveInDate,
 
-                    nessage:
-                        ownerMessage || null,
+                nessage:
+                    ownerMessage || null,
 
-                    status:
-                        "Confirmed"
-                }
+                status:
+                    "Confirmed"
 
-            ])
+            })
             .select()
             .single();
 
@@ -435,17 +443,18 @@ async function confirmBooking(event) {
         }
 
 
-        /* SAVE BOOKING LOCALLY AS BACKUP */
+        /* SAVE FOR DASHBOARD BACKUP */
 
-        let savedBookings =
+        let bookings =
             JSON.parse(
                 localStorage.getItem("studentBookings")
             ) || [];
 
 
-        savedBookings.push({
+        bookings.push({
 
-            id: booking.id,
+            id:
+                booking.id,
 
             name:
                 accommodation.name,
@@ -454,13 +463,16 @@ async function confirmBooking(event) {
                 accommodation.location,
 
             price:
-                "R" + accommodation.price + " / month",
+                "R" +
+                accommodation.price +
+                " / month",
 
             date:
                 moveInDate,
 
             message:
-                ownerMessage || "No message",
+                ownerMessage ||
+                "No message",
 
             status:
                 "Confirmed"
@@ -470,7 +482,7 @@ async function confirmBooking(event) {
 
         localStorage.setItem(
             "studentBookings",
-            JSON.stringify(savedBookings)
+            JSON.stringify(bookings)
         );
 
 
@@ -487,11 +499,6 @@ async function confirmBooking(event) {
             "Booking Confirmed";
 
 
-        /*
-           GO TO DASHBOARD
-           AFTER A SHORT DELAY
-        */
-
         setTimeout(function() {
 
             window.location.href =
@@ -500,23 +507,26 @@ async function confirmBooking(event) {
         }, 1200);
 
 
-    } catch (error) {
+    }
+
+    catch (error) {
 
         console.error(
-            "Booking error:",
+            "BOOKING ERROR:",
             error
         );
 
 
         messageBox.textContent =
             error.message ||
-            "Something went wrong while confirming your booking.";
+            "Booking failed.";
 
         messageBox.className =
             "message error";
 
 
-        confirmButton.disabled = false;
+        confirmButton.disabled =
+            false;
 
         confirmButton.textContent =
             "Confirm Booking";
@@ -526,6 +536,7 @@ async function confirmBooking(event) {
 }
 
 </script>
+
 
 </body>
 
