@@ -5,10 +5,11 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>StudentStay | Book Accommodation</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
 
@@ -67,6 +68,10 @@
             margin-bottom: 10px;
         }
 
+        .property p {
+            margin-bottom: 8px;
+        }
+
         label {
             display: block;
             font-weight: bold;
@@ -102,6 +107,11 @@
 
         .book-button:hover {
             background: #1d4ed8;
+        }
+
+        .book-button:disabled {
+            background: #93c5fd;
+            cursor: not-allowed;
         }
 
         #message {
@@ -196,6 +206,7 @@
             <button
                 type="submit"
                 class="book-button"
+                id="bookButton"
             >
                 Confirm Booking
             </button>
@@ -212,15 +223,35 @@
 
 <script>
 
-/* GET ACCOMMODATION INFORMATION */
+/* =================================
+   SUPABASE CONNECTION
+   ================================= */
 
-let bookingName =
+const SUPABASE_URL =
+    "https://xciewmepytfgdhyjkkne.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_YeUsS4SbHTxBEGosZvDTWA_NAdK3FbU";
+
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+/* =================================
+   GET ACCOMMODATION INFORMATION
+   ================================= */
+
+const bookingName =
     localStorage.getItem("bookingName");
 
-let bookingLocation =
+const bookingLocation =
     localStorage.getItem("bookingLocation");
 
-let bookingPrice =
+const bookingPrice =
     localStorage.getItem("bookingPrice");
 
 
@@ -239,132 +270,227 @@ document.getElementById("bookingPrice")
     bookingPrice || "";
 
 
-/* LOAD STUDENT INFORMATION */
+/* =================================
+   GET LOGGED-IN USER
+   ================================= */
 
-let savedName =
-    localStorage.getItem("studentName");
+async function checkUser() {
 
-let savedEmail =
-    localStorage.getItem("studentEmail");
+    const {
+        data: { user }
+    } = await supabaseClient.auth.getUser();
 
 
-if (savedName) {
+    if (!user) {
 
-    document.getElementById("studentName")
-        .value = savedName;
+        window.location.href =
+            "login.html";
+
+        return null;
+
+    }
+
+
+    return user;
 
 }
 
 
-if (savedEmail) {
+/* =================================
+   LOAD STUDENT INFORMATION
+   ================================= */
+
+async function loadStudent() {
+
+    const user =
+        await checkUser();
+
+
+    if (!user) {
+        return;
+    }
+
 
     document.getElementById("studentEmail")
-        .value = savedEmail;
+        .value =
+        user.email || "";
+
+
+    const {
+        data: profile,
+        error
+    } = await supabaseClient
+        .from("profiles")
+        .select("full_name")
+        .eq("id", user.id)
+        .maybeSingle();
+
+
+    if (!error && profile && profile.full_name) {
+
+        document.getElementById("studentName")
+            .value =
+            profile.full_name;
+
+    }
 
 }
 
 
-/* CONFIRM BOOKING */
+/* =================================
+   CONFIRM BOOKING
+   ================================= */
 
-function confirmBooking(event) {
+async function confirmBooking(event) {
 
     event.preventDefault();
 
 
-    let student =
-        document.getElementById("studentName").value.trim();
+    const button =
+        document.getElementById("bookButton");
 
-    let email =
-        document.getElementById("studentEmail").value.trim();
-
-    let date =
-        document.getElementById("moveInDate").value;
-
-    let message =
-        document.getElementById("messageText").value.trim();
+    const message =
+        document.getElementById("message");
 
 
-    /* GET EXISTING BOOKINGS */
+    button.disabled = true;
 
-    let bookings =
-        JSON.parse(
-            localStorage.getItem("studentBookings")
-        ) || [];
+    button.textContent =
+        "Saving booking...";
 
-
-    /* CREATE NEW BOOKING */
-
-    let newBooking = {
-
-        name: bookingName,
-
-        location: bookingLocation,
-
-        price: bookingPrice,
-
-        student: student,
-
-        email: email,
-
-        date: date,
-
-        message: message,
-
-        status: "Confirmed"
-
-    };
+    message.textContent = "";
 
 
-    /* ADD NEW BOOKING */
+    try {
 
-    bookings.push(newBooking);
-
-
-    /* SAVE ALL BOOKINGS */
-
-    localStorage.setItem(
-        "studentBookings",
-        JSON.stringify(bookings)
-    );
+        const user =
+            await checkUser();
 
 
-    /* SAVE STUDENT INFORMATION */
-
-    localStorage.setItem(
-        "studentName",
-        student
-    );
-
-    localStorage.setItem(
-        "studentEmail",
-        email
-    );
+        if (!user) {
+            return;
+        }
 
 
-    /* SHOW SUCCESS MESSAGE */
-
-    document.getElementById("message")
-        .textContent =
-        "Booking confirmed successfully!";
-
-
-    document.getElementById("message")
-        .style.color =
-        "green";
+        const studentName =
+            document.getElementById("studentName")
+                .value
+                .trim();
 
 
-    /* GO TO DASHBOARD */
+        const studentEmail =
+            document.getElementById("studentEmail")
+                .value
+                .trim();
 
-    setTimeout(function() {
 
-        window.location.href =
-            "dashboard.html";
+        const moveInDate =
+            document.getElementById("moveInDate")
+                .value;
 
-    }, 1000);
+
+        const messageText =
+            document.getElementById("messageText")
+                .value
+                .trim();
+
+
+        /* SAVE BOOKING TO SUPABASE */
+
+        const { error } =
+            await supabaseClient
+                .from("bookings")
+                .insert({
+
+                    user_id: user.id,
+
+                    accommodation_name:
+                        bookingName || "Accommodation",
+
+                    location:
+                        bookingLocation || "",
+
+                    price:
+                        bookingPrice || "",
+
+                    move_in_date:
+                        moveInDate,
+
+                    message:
+                        messageText,
+
+                    status:
+                        "Confirmed"
+
+                });
+
+
+        if (error) {
+
+            console.error(error);
+
+            throw error;
+
+        }
+
+
+        /* SAVE DISPLAY INFORMATION */
+
+        localStorage.setItem(
+            "studentName",
+            studentName
+        );
+
+        localStorage.setItem(
+            "studentEmail",
+            studentEmail
+        );
+
+
+        message.textContent =
+            "Booking confirmed successfully!";
+
+        message.style.color =
+            "green";
+
+
+        setTimeout(function() {
+
+            window.location.href =
+                "dashboard.html";
+
+        }, 1200);
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        message.textContent =
+            error.message ||
+            "Could not save booking.";
+
+        message.style.color =
+            "red";
+
+        button.disabled = false;
+
+        button.textContent =
+            "Confirm Booking";
+
+    }
 
 }
 
+
+/* =================================
+   START
+   ================================= */
+
+loadStudent();
+
 </script>
+
 </body>
 
 </html>
