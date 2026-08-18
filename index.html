@@ -2,26 +2,195 @@
 <html>
 <head>
     <title>StudentStay</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f5f7fb;
+            text-align: center;
+        }
+
+        header {
+            background: white;
+            padding: 20px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .hero {
+            background: #2563eb;
+            color: white;
+            padding: 60px 20px;
+        }
+
+        .search-box {
+            background: white;
+            padding: 20px;
+            max-width: 700px;
+            margin: 30px auto;
+            border-radius: 10px;
+        }
+
+        input {
+            padding: 12px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 12px 20px;
+            background: #111827;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .accommodation {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            padding: 40px;
+        }
+
+        .card {
+            background: white;
+            width: 280px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            color: #2563eb;
+        }
+
+        .price {
+            font-weight: bold;
+            color: #16a34a;
+        }
+
+        .details {
+            margin-top: 15px;
+            background: #2563eb;
+        }
+    </style>
 </head>
 
 <body>
 
-    <h1>StudentStay</h1>
+<header>
+    <div class="logo">StudentStay</div>
+</header>
 
-    <p>Find affordable student accommodation.</p>
-<div class="search-box">
-    <input type="text" id="searchInput" placeholder="Enter your campus or location">
+<section class="hero">
 
-    <input type="number" id="priceInput" placeholder="Maximum price">
+    <h1>Find Your Perfect Student Home</h1>
 
-    <button type="button" onclick="searchAccommodation()">Search</button>
+    <p>Affordable student accommodation near your campus.</p>
+
+    <div class="search-box">
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Enter location"
+        >
+
+        <input
+            type="number"
+            id="priceInput"
+            placeholder="Maximum price"
+        >
+
+        <button onclick="searchAccommodation()">
+            Search
+        </button>
+
+    </div>
+
+</section>
+
+<h2>Available Accommodation</h2>
+
+<div class="accommodation">
+
+    <!-- Accommodation 1 -->
+    <div class="card">
+
+        <h3>Student Residence</h3>
+
+        <p>📍 Soshanguve</p>
+
+        <p>Wi-Fi • Furnished • Security</p>
+
+        <p class="price">R3500</p>
+
+        <button class="details">
+            View Details
+        </button>
+
+    </div>
+
+
+    <!-- Accommodation 2 -->
+    <div class="card">
+
+        <h3>Modern Student Room</h3>
+
+        <p>📍 Pretoria</p>
+
+        <p>Wi-Fi • Furnished • Parking</p>
+
+        <p class="price">R4000</p>
+
+        <button class="details">
+            View Details
+        </button>
+
+    </div>
+
+
+    <!-- Accommodation 3 -->
+    <div class="card">
+
+        <h3>Affordable Apartment</h3>
+
+        <p>📍 Soshanguve</p>
+
+        <p>Wi-Fi • Security • Kitchen</p>
+
+        <p class="price">R3000</p>
+
+        <button class="details">
+            View Details
+        </button>
+
+    </div>
+
 </div>
+
+
 <script>
+
 function searchAccommodation() {
 
-    let search = document.getElementById("searchInput").value.toLowerCase().trim();
+    let search = document
+        .getElementById("searchInput")
+        .value
+        .toLowerCase()
+        .trim();
 
-    let maxPrice = document.getElementById("priceInput").value;
+    let maxPrice = document
+        .getElementById("priceInput")
+        .value;
 
     let cards = document.querySelectorAll(".card");
 
@@ -29,22 +198,37 @@ function searchAccommodation() {
 
         let information = card.textContent.toLowerCase();
 
-        let priceText = card.querySelector(".price").textContent;
+        let priceText = card
+            .querySelector(".price")
+            .textContent;
 
-        let price = parseInt(priceText.replace(/\D/g, ""));
+        let price = parseInt(
+            priceText.replace(/\D/g, "")
+        );
 
-        let locationMatch = information.includes(search);
+        let locationMatch =
+            search === "" ||
+            information.includes(search);
 
-        let priceMatch = maxPrice === "" || price <= Number(maxPrice);
+        let priceMatch =
+            maxPrice === "" ||
+            price <= Number(maxPrice);
 
         if (locationMatch && priceMatch) {
+
             card.style.display = "";
+
         } else {
+
             card.style.display = "none";
+
         }
 
     });
+
 }
+
 </script>
+
 </body>
 </html>
