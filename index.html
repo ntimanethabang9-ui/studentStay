@@ -709,7 +709,9 @@
 
 
 <script>
-<!-- JAVASCRIPT -->
+
+/* BOOK ACCOMMODATION */
+
 function bookAccommodation() {
 
     let name =
@@ -738,10 +740,129 @@ function bookAccommodation() {
     );
 
 
-    window.location.href =
-        "booking.html";
+    window.location.href = "booking.html";
+
 }
-<script>
+
+
+/* SEARCH AND PRICE FILTER */
+
+function searchAccommodation() {
+
+    let search =
+        document.getElementById("searchInput")
+        .value
+        .toLowerCase()
+        .trim();
+
+
+    let maxPrice =
+        document.getElementById("priceInput")
+        .value;
+
+
+    let cards =
+        document.querySelectorAll(".card");
+
+
+    cards.forEach(function(card) {
+
+        let information =
+            card.textContent.toLowerCase();
+
+
+        let priceText =
+            card.querySelector(".price").textContent;
+
+
+        let price =
+            parseInt(
+                priceText.replace(/\D/g, "")
+            );
+
+
+        let locationMatch =
+            search === "" ||
+            information.includes(search);
+
+
+        let priceMatch =
+            maxPrice === "" ||
+            price <= Number(maxPrice);
+
+
+        if (locationMatch && priceMatch) {
+
+            card.style.display = "";
+
+        } else {
+
+            card.style.display = "none";
+
+        }
+
+    });
+
+}
+
+
+/* VIEW DETAILS */
+
+function showDetails(
+    name,
+    location,
+    price,
+    features
+) {
+
+    document
+        .getElementById("detailsName")
+        .textContent = name;
+
+
+    document
+        .getElementById("detailsLocation")
+        .textContent =
+        "📍 Location: " + location;
+
+
+    document
+        .getElementById("detailsPrice")
+        .textContent =
+        "💰 Price: R" + price + " per month";
+
+
+    document
+        .getElementById("detailsFeatures")
+        .textContent =
+        "Facilities: " + features;
+
+
+    document
+        .getElementById("details")
+        .style.display = "block";
+
+
+    document
+        .getElementById("details")
+        .scrollIntoView({
+            behavior: "smooth"
+        });
+
+}
+
+
+/* CLOSE DETAILS */
+
+function closeDetails() {
+
+    document
+        .getElementById("details")
+        .style.display = "none";
+
+}
+
+</script>
 
 
 /* SEARCH AND PRICE FILTER */
