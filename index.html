@@ -14,26 +14,78 @@
     <input id="priceInput" type="number" placeholder="Maximum price">
 
     <button onclick="searchAccommodation()">Search</button>
+    function showDetails(name, location, price, features) {
+
+    document.getElementById("detailsName").textContent = name;
+
+    document.getElementById("detailsLocation").textContent =
+        "📍 Location: " + location;
+
+    document.getElementById("detailsPrice").textContent =
+        "💰 Price: R" + price + " per month";
+
+    document.getElementById("detailsFeatures").textContent =
+        "Facilities: " + features;
+
+    document.getElementById("details").style.display = "block";
+}
+
+function closeDetails() {
+
+    document.getElementById("details").style.display = "none";
+}
 
     <h2>Accommodation</h2>
+<div class="card">
+    <h3>Student Residence</h3>
+    <p>📍 Soshanguve</p>
+    <p>📶 Wi-Fi</p>
+    <p>🛡️ Security</p>
+    <p>🛏️ Furnished</p>
+    <p class="price">3500</p>
 
-    <div class="card">
-        <h3>Student Residence</h3>
-        <p>Soshanguve</p>
-        <p class="price">3500</p>
-    </div>
+    <button onclick="showDetails('Student Residence', 'Soshanguve', '3500', 'Wi-Fi, Security, Furnished')">
+        View Details
+    </button>
+</div>
+ 
+  <div class="card">
+    <h3>Modern Student Room</h3>
+    <p>📍 Pretoria</p>
+    <p>📶 Wi-Fi</p>
+    <p>🅿️ Parking</p>
+    <p>🛏️ Furnished</p>
+    <p class="price">4000</p>
 
-    <div class="card">
-        <h3>Modern Student Room</h3>
-        <p>Pretoria</p>
-        <p class="price">4000</p>
-    </div>
+    <button onclick="showDetails('Modern Student Room', 'Pretoria', '4000', 'Wi-Fi, Parking, Furnished')">
+        View Details
+    </button>
+</div>
 
-    <div class="card">
-        <h3>Affordable Apartment</h3>
-        <p>Soshanguve</p>
-        <p class="price">3000</p>
-    </div>
+  <div class="card">
+    <h3>Affordable Apartment</h3>
+    <p>📍 Soshanguve</p>
+    <p>📶 Wi-Fi</p>
+    <p>🛡️ Security</p>
+    <p>🍳 Kitchen</p>
+    <p class="price">3000</p>
+<div id="details" style="display:none; margin:30px; padding:25px; background:#f0f4ff;">
+
+    <h2 id="detailsName"></h2>
+
+    <p id="detailsLocation"></p>
+
+    <p id="detailsPrice"></p>
+
+    <p id="detailsFeatures"></p>
+
+    <button onclick="closeDetails()">Close</button>
+
+</div>
+    <button onclick="showDetails('Affordable Apartment', 'Soshanguve', '3000', 'Wi-Fi, Security, Kitchen')">
+        View Details
+    </button>
+</div>
 
     <script>
 
