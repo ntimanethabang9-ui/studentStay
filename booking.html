@@ -4,12 +4,9 @@
 <head>
 
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>StudentStay | Book Accommodation</title>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
 
@@ -110,7 +107,7 @@
         }
 
         .book-button:disabled {
-            background: #93c5fd;
+            background: #9ca3af;
             cursor: not-allowed;
         }
 
@@ -126,6 +123,7 @@
 
 
 <body>
+
 
 <header>
 
@@ -205,8 +203,8 @@
 
             <button
                 type="submit"
+                id="confirmButton"
                 class="book-button"
-                id="bookButton"
             >
                 Confirm Booking
             </button>
@@ -221,11 +219,12 @@
 </div>
 
 
-<script>
+<!-- SUPABASE -->
 
-/* =================================
-   SUPABASE CONNECTION
-   ================================= */
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+<script>
 
 const SUPABASE_URL =
     "https://xciewmepytfgdhyjkkne.supabase.co";
@@ -233,25 +232,22 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
     "sb_publishable_YeUsS4SbHTxBEGosZvDTWA_NAdK3FbU";
 
-
 const supabaseClient =
-    window.supabase.createClient(
+    supabase.createClient(
         SUPABASE_URL,
         SUPABASE_KEY
     );
 
 
-/* =================================
-   GET ACCOMMODATION INFORMATION
-   ================================= */
+/* GET ACCOMMODATION */
 
-const bookingName =
+let bookingName =
     localStorage.getItem("bookingName");
 
-const bookingLocation =
+let bookingLocation =
     localStorage.getItem("bookingLocation");
 
-const bookingPrice =
+let bookingPrice =
     localStorage.getItem("bookingPrice");
 
 
@@ -270,76 +266,32 @@ document.getElementById("bookingPrice")
     bookingPrice || "";
 
 
-/* =================================
-   GET LOGGED-IN USER
-   ================================= */
+/* GET STUDENT INFORMATION */
 
-async function checkUser() {
+let savedName =
+    localStorage.getItem("studentName");
 
-    const {
-        data: { user }
-    } = await supabaseClient.auth.getUser();
+let savedEmail =
+    localStorage.getItem("studentEmail");
 
 
-    if (!user) {
+if (savedName) {
 
-        window.location.href =
-            "login.html";
-
-        return null;
-
-    }
-
-
-    return user;
+    document.getElementById("studentName")
+        .value = savedName;
 
 }
 
 
-/* =================================
-   LOAD STUDENT INFORMATION
-   ================================= */
-
-async function loadStudent() {
-
-    const user =
-        await checkUser();
-
-
-    if (!user) {
-        return;
-    }
-
+if (savedEmail) {
 
     document.getElementById("studentEmail")
-        .value =
-        user.email || "";
-
-
-    const {
-        data: profile,
-        error
-    } = await supabaseClient
-        .from("profiles")
-        .select("full_name")
-        .eq("id", user.id)
-        .maybeSingle();
-
-
-    if (!error && profile && profile.full_name) {
-
-        document.getElementById("studentName")
-            .value =
-            profile.full_name;
-
-    }
+        .value = savedEmail;
 
 }
 
 
-/* =================================
-   CONFIRM BOOKING
-   ================================= */
+/* CONFIRM BOOKING */
 
 async function confirmBooking(event) {
 
@@ -347,110 +299,133 @@ async function confirmBooking(event) {
 
 
     const button =
-        document.getElementById("bookButton");
+        document.getElementById("confirmButton");
 
-    const message =
+    const messageBox =
         document.getElementById("message");
 
 
     button.disabled = true;
 
     button.textContent =
-        "Saving booking...";
+        "Booking...";
 
-    message.textContent = "";
+
+    messageBox.textContent = "";
 
 
     try {
 
-        const user =
-            await checkUser();
+        /* GET CURRENT USER */
+
+        const {
+            data: {
+                user
+            },
+            error: userError
+        } = await supabaseClient.auth.getUser();
 
 
-        if (!user) {
+        if (userError || !user) {
+
+            messageBox.textContent =
+                "Please login before booking.";
+
+            messageBox.style.color =
+                "red";
+
+            button.disabled = false;
+
+            button.textContent =
+                "Confirm Booking";
+
             return;
         }
 
 
-        const studentName =
-            document.getElementById("studentName")
-                .value
-                .trim();
+        /* GET FORM DATA */
+
+        const student =
+            document.getElementById("studentName").value;
+
+        const email =
+            document.getElementById("studentEmail").value;
+
+        const date =
+            document.getElementById("moveInDate").value;
+
+        const message =
+            document.getElementById("messageText").value;
 
 
-        const studentEmail =
-            document.getElementById("studentEmail")
-                .value
-                .trim();
+        /* SAVE BOOKING */
 
+        const {
+            error
+        } = await supabaseClient
+            .from("bookings")
+            .insert({
 
-        const moveInDate =
-            document.getElementById("moveInDate")
-                .value;
+                user_id: user.id,
 
+                accommodation_name:
+                    bookingName,
 
-        const messageText =
-            document.getElementById("messageText")
-                .value
-                .trim();
+                location:
+                    bookingLocation,
 
+                price:
+                    bookingPrice,
 
-        /* SAVE BOOKING TO SUPABASE */
+                move_in_date:
+                    date,
 
-        const { error } =
-            await supabaseClient
-                .from("bookings")
-                .insert({
+                message:
+                    message,
 
-                    user_id: user.id,
+                status:
+                    "Confirmed"
 
-                    accommodation_name:
-                        bookingName || "Accommodation",
-
-                    location:
-                        bookingLocation || "",
-
-                    price:
-                        bookingPrice || "",
-
-                    move_in_date:
-                        moveInDate,
-
-                    message:
-                        messageText,
-
-                    status:
-                        "Confirmed"
-
-                });
+            });
 
 
         if (error) {
 
             console.error(error);
 
-            throw error;
+            messageBox.textContent =
+                "Booking failed: " +
+                error.message;
 
+            messageBox.style.color =
+                "red";
+
+            button.disabled = false;
+
+            button.textContent =
+                "Confirm Booking";
+
+            return;
         }
 
 
-        /* SAVE DISPLAY INFORMATION */
+        /* SAVE NAME LOCALLY FOR DISPLAY */
 
         localStorage.setItem(
             "studentName",
-            studentName
+            student
         );
 
         localStorage.setItem(
             "studentEmail",
-            studentEmail
+            email
         );
 
 
-        message.textContent =
+        messageBox.textContent =
             "Booking confirmed successfully!";
 
-        message.style.color =
+        messageBox.style.color =
             "green";
 
 
@@ -459,18 +434,18 @@ async function confirmBooking(event) {
             window.location.href =
                 "dashboard.html";
 
-        }, 1200);
+        }, 1500);
 
+    }
 
-    } catch (error) {
+    catch (error) {
 
         console.error(error);
 
-        message.textContent =
-            error.message ||
-            "Could not save booking.";
+        messageBox.textContent =
+            "Something went wrong. Please try again.";
 
-        message.style.color =
+        messageBox.style.color =
             "red";
 
         button.disabled = false;
@@ -482,14 +457,8 @@ async function confirmBooking(event) {
 
 }
 
-
-/* =================================
-   START
-   ================================= */
-
-loadStudent();
-
 </script>
+
 
 </body>
 
