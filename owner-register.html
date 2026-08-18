@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>StudentStay | Owner Registration</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            color: #1f2937;
+        }
+
+        header {
+            background: white;
+            padding: 20px 7%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .logo {
+            color: #2563eb;
+            font-size: 27px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .container {
+            min-height: calc(100vh - 80px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+        }
+
+        .register-box {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            margin-bottom: 18px;
+            border: 1px solid #d1d5db;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .register-button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 7px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .register-button:hover {
+            background: #1d4ed8;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .login-link a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .message {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .student-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .student-link a {
+            color: #374151;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <a href="index.html" class="logo">
+        StudentStay
+    </a>
+
+</header>
+
+
+<div class="container">
+
+    <div class="register-box">
+
+        <h1>
+            Property Owner Registration
+        </h1>
+
+        <p class="subtitle">
+            Create an account to list your accommodation.
+        </p>
+
+
+        <form onsubmit="registerOwner(event)">
+
+
+            <label>
+                Full Name
+            </label>
+
+            <input
+                type="text"
+                id="ownerName"
+                placeholder="Enter your full name"
+                required
+            >
+
+
+            <label>
+                Email Address
+            </label>
+
+            <input
+                type="email"
+                id="ownerEmail"
+                placeholder="Enter your email"
+                required
+            >
+
+
+            <label>
+                Phone Number
+            </label>
+
+            <input
+                type="tel"
+                id="ownerPhone"
+                placeholder="Enter your phone number"
+                required
+            >
+
+
+            <label>
+                Password
+            </label>
+
+            <input
+                type="password"
+                id="ownerPassword"
+                placeholder="Create a password"
+                required
+            >
+
+
+            <label>
+                Confirm Password
+            </label>
+
+            <input
+                type="password"
+                id="confirmPassword"
+                placeholder="Confirm your password"
+                required
+            >
+
+
+            <button
+                type="submit"
+                class="register-button"
+            >
+                Create Owner Account
+            </button>
+
+        </form>
+
+
+        <div
+            id="message"
+            class="message"
+        ></div>
+
+
+        <p class="login-link">
+
+            Already have an owner account?
+
+            <a href="owner-login.html">
+                Login
+            </a>
+
+        </p>
+
+
+        <p class="student-link">
+
+            Are you a student?
+
+            <a href="register.html">
+                Student Registration
+            </a>
+
+        </p>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function registerOwner(event) {
+
+    event.preventDefault();
+
+
+    let name =
+        document.getElementById("ownerName").value.trim();
+
+    let email =
+        document.getElementById("ownerEmail").value.trim();
+
+    let phone =
+        document.getElementById("ownerPhone").value.trim();
+
+    let password =
+        document.getElementById("ownerPassword").value;
+
+    let confirmPassword =
+        document.getElementById("confirmPassword").value;
+
+
+    let message =
+        document.getElementById("message");
+
+
+    if (password !== confirmPassword) {
+
+        message.textContent =
+            "Passwords do not match.";
+
+        message.style.color =
+            "red";
+
+        return;
+
+    }
+
+
+    localStorage.setItem(
+        "ownerName",
+        name
+    );
+
+
+    localStorage.setItem(
+        "ownerEmail",
+        email
+    );
+
+
+    localStorage.setItem(
+        "ownerPhone",
+        phone
+    );
+
+
+    localStorage.setItem(
+        "ownerPassword",
+        password
+    );
+
+
+    message.textContent =
+        "Owner account created successfully!";
+
+    message.style.color =
+        "green";
+
+
+    setTimeout(function() {
+
+        window.location.href =
+            "owner-login.html";
+
+    }, 1500);
+
+}
+
+</script>
+
+
+</body>
+
+</html>
