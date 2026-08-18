@@ -1,305 +1,301 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>StudentStay | Confirm Booking</title>
+<title>StudentStay | Confirm Booking</title>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <script>
-        const SUPABASE_URL =
-            "https://xciewmepytfgdhyjkkne.supabase.co";
+<script>
 
-        const SUPABASE_KEY =
-            "sb_publishable_YeUsS4SbHTxBEGosZvDTWA_NAdK3FbU";
+const SUPABASE_URL =
+"https://xciewmepytfgdhyjkkne.supabase.co";
 
-        const supabaseClient =
-            window.supabase.createClient(
-                SUPABASE_URL,
-                SUPABASE_KEY
-            );
-    </script>
+const SUPABASE_KEY =
+"sb_publishable_YeUsS4SbHTxBEGosZvDTWA_NAdK3FbU";
 
-    <style>
+const supabaseClient =
+window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+</script>
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f7fb;
-            color: #1f2937;
-            min-height: 100vh;
-        }
+<style>
 
-        header {
-            background: white;
-            padding: 18px 7%;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-        }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-        .logo {
-            color: #2563eb;
-            font-size: 27px;
-            font-weight: bold;
-            text-decoration: none;
-        }
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f7fb;
+    color: #1f2937;
+}
 
-        .container {
-            width: 90%;
-            max-width: 600px;
-            margin: 50px auto;
-        }
+header {
+    background: white;
+    padding: 20px 7%;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
 
-        .booking-box {
-            background: white;
-            padding: 35px;
-            border-radius: 15px;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
-        }
+.logo {
+    color: #2563eb;
+    font-size: 27px;
+    font-weight: bold;
+    text-decoration: none;
+}
 
-        h1 {
-            text-align: center;
-            margin-bottom: 10px;
-        }
+.container {
+    width: 90%;
+    max-width: 600px;
+    margin: 50px auto;
+}
 
-        .subtitle {
-            text-align: center;
-            color: #6b7280;
-            margin-bottom: 30px;
-        }
+.booking-box {
+    background: white;
+    padding: 35px;
+    border-radius: 15px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+}
 
-        .accommodation-info {
-            background: #f5f7fb;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-        }
+h1 {
+    text-align: center;
+    margin-bottom: 10px;
+}
 
-        .accommodation-info h2 {
-            color: #2563eb;
-            margin-bottom: 12px;
-        }
+.subtitle {
+    text-align: center;
+    color: #6b7280;
+    margin-bottom: 30px;
+}
 
-        .accommodation-info p {
-            margin-bottom: 8px;
-        }
+.info {
+    background: #f5f7fb;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+}
 
-        label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
+.info h2 {
+    color: #2563eb;
+    margin-bottom: 15px;
+}
 
-        input,
-        textarea {
-            width: 100%;
-            padding: 13px;
-            border: 1px solid #d1d5db;
-            border-radius: 7px;
-            font-size: 15px;
-            margin-bottom: 20px;
-        }
+.info p {
+    margin-bottom: 8px;
+}
 
-        textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
 
-        input:focus,
-        textarea:focus {
-            outline: none;
-            border-color: #2563eb;
-        }
+input,
+textarea {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+    font-size: 15px;
+    margin-bottom: 20px;
+}
 
-        .confirm-button {
-            width: 100%;
-            padding: 14px;
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+textarea {
+    min-height: 100px;
+    resize: vertical;
+}
 
-        .confirm-button:hover {
-            background: #1d4ed8;
-        }
+.confirm-button {
+    width: 100%;
+    padding: 14px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+}
 
-        .back-button {
-            width: 100%;
-            padding: 13px;
-            margin-top: 10px;
-            background: #111827;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+.confirm-button:hover {
+    background: #1d4ed8;
+}
 
-        .message {
-            text-align: center;
-            margin-top: 18px;
-            font-weight: bold;
-        }
+.back-button {
+    width: 100%;
+    padding: 13px;
+    margin-top: 10px;
+    background: #111827;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
 
-        .loading {
-            text-align: center;
-            padding: 30px;
-        }
+.message {
+    text-align: center;
+    margin-top: 18px;
+    font-weight: bold;
+}
 
-    </style>
+</style>
 
 </head>
 
-
 <body>
-
 
 <header>
 
-    <a href="index.html" class="logo">
-        StudentStay
-    </a>
+<a href="index.html" class="logo">
+StudentStay
+</a>
 
 </header>
 
 
 <div class="container">
 
-    <div class="booking-box">
+<div class="booking-box">
 
-        <h1>Confirm Booking</h1>
+<h1>Confirm Booking</h1>
 
-        <p class="subtitle">
-            Complete the information below to confirm your accommodation.
-        </p>
-
-
-        <div
-            id="loading"
-            class="loading"
-        >
-            Loading accommodation...
-        </div>
+<p class="subtitle">
+Complete your booking below.
+</p>
 
 
-        <div
-            id="bookingContent"
-            style="display:none;"
-        >
+<div id="loading">
 
-            <div class="accommodation-info">
+<p style="text-align:center;">
+Loading accommodation...
+</p>
 
-                <h2 id="accommodationName"></h2>
-
-                <p id="accommodationLocation"></p>
-
-                <p id="accommodationPrice"></p>
-
-                <p id="accommodationFeatures"></p>
-
-            </div>
+</div>
 
 
-            <form onsubmit="confirmBooking(event)">
-
-                <label>
-                    Move-in Date
-                </label>
-
-                <input
-                    type="date"
-                    id="moveInDate"
-                    required
-                >
+<div
+id="bookingContent"
+style="display:none;"
+>
 
 
-                <label>
-                    Message
-                </label>
+<div class="info">
 
-                <textarea
-                    id="message"
-                    placeholder="Add a message to the accommodation owner (optional)"
-                ></textarea>
+<h2 id="accommodationName"></h2>
 
+<p id="accommodationLocation"></p>
 
-                <button
-                    type="submit"
-                    class="confirm-button"
-                >
-                    Confirm Booking
-                </button>
+<p id="accommodationPrice"></p>
 
-            </form>
+<p id="accommodationFeatures"></p>
 
-        </div>
+</div>
 
 
-        <div
-            id="statusMessage"
-            class="message"
-        ></div>
+<form onsubmit="confirmBooking(event)">
 
 
-        <button
-            class="back-button"
-            onclick="window.location.href='index.html'"
-        >
-            Back to Accommodation
-        </button>
+<label>
+Move-in Date
+</label>
 
-    </div>
+<input
+type="date"
+id="moveInDate"
+required
+>
+
+
+<label>
+Message
+</label>
+
+<textarea
+id="message"
+placeholder="Optional message to the owner"
+></textarea>
+
+
+<button
+type="submit"
+class="confirm-button"
+>
+Confirm Booking
+</button>
+
+
+</form>
+
+</div>
+
+
+<div
+id="statusMessage"
+class="message"
+></div>
+
+
+<button
+class="back-button"
+onclick="window.location.href='index.html'"
+>
+Back to Accommodation
+</button>
+
+
+</div>
 
 </div>
 
 
 <script>
 
-let accommodationId = null;
-let accommodation = null;
 
-
-/* GET ACCOMMODATION ID */
+/* GET ID FROM URL */
 
 const urlParams =
-    new URLSearchParams(window.location.search);
+new URLSearchParams(
+window.location.search
+);
 
-const idFromUrl =
-    urlParams.get("id");
+let accommodationId =
+urlParams.get("id");
 
 
-if (idFromUrl) {
+/* IF URL DOES NOT HAVE ID,
+   CHECK LOCAL STORAGE */
+
+if (!accommodationId) {
 
     accommodationId =
-        Number(idFromUrl);
-
-} else {
-
-    accommodationId =
-        Number(
-            localStorage.getItem(
-                "bookingAccommodationId"
-            )
-        );
+    localStorage.getItem(
+        "bookingAccommodationId"
+    );
 
 }
 
 
+/* CONVERT TO NUMBER */
+
+accommodationId =
+Number(accommodationId);
+
+
 /* LOAD ACCOMMODATION */
-```javascript
+
 async function loadAccommodation() {
+
 
     if (!accommodationId) {
 
@@ -313,32 +309,29 @@ async function loadAccommodation() {
 
 
     console.log(
-        "Looking for accommodation ID:",
+        "Accommodation ID:",
         accommodationId
     );
 
 
-    const {
-        data,
-        error
-    } =
-        await supabaseClient
-            .from("accommodations")
-            .select("*")
-            .eq("id", accommodationId);
+    const result =
+    await supabaseClient
+        .from("accommodations")
+        .select("*")
+        .eq("id", accommodationId);
 
 
-    console.log("Supabase result:", data);
-    console.log("Supabase error:", error);
+    console.log(
+        "Supabase result:",
+        result
+    );
 
 
-    if (error) {
-
-        console.error(error);
+    if (result.error) {
 
         showError(
             "Could not load accommodation: " +
-            error.message
+            result.error.message
         );
 
         return;
@@ -346,7 +339,10 @@ async function loadAccommodation() {
     }
 
 
-    if (!data || data.length === 0) {
+    if (
+        !result.data ||
+        result.data.length === 0
+    ) {
 
         showError(
             "Accommodation was not found in the database."
@@ -357,55 +353,67 @@ async function loadAccommodation() {
     }
 
 
-    accommodation =
-        data[0];
+    /* TAKE FIRST ROW */
 
+    const accommodation =
+    result.data[0];
+
+
+    /* SHOW INFORMATION */
 
     document.getElementById(
         "accommodationName"
     ).textContent =
-        accommodation.name;
+    accommodation.name;
 
 
     document.getElementById(
         "accommodationLocation"
     ).textContent =
-        "📍 " +
-        accommodation.location;
+    "📍 " +
+    accommodation.location;
 
 
     document.getElementById(
         "accommodationPrice"
     ).textContent =
-        "💰 R" +
-        accommodation.price +
-        " / month";
+    "💰 R" +
+    accommodation.price +
+    " / month";
 
 
     document.getElementById(
         "accommodationFeatures"
     ).textContent =
-        "🏠 " +
-        (
-            accommodation.features ||
-            "Facilities not specified"
-        );
+    "🏠 " +
+    (
+        accommodation.features ||
+        "Facilities not specified"
+    );
 
+
+    /* SAVE ID */
+
+    localStorage.setItem(
+        "bookingAccommodationId",
+        accommodation.id
+    );
+
+
+    /* SHOW PAGE */
 
     document.getElementById(
         "loading"
     ).style.display =
-        "none";
+    "none";
 
 
     document.getElementById(
         "bookingContent"
     ).style.display =
-        "block";
+    "block";
 
 }
-```
-
 
 
 /* CONFIRM BOOKING */
@@ -415,186 +423,152 @@ async function confirmBooking(event) {
     event.preventDefault();
 
 
-    const statusMessage =
-        document.getElementById(
-            "statusMessage"
-        );
+    const status =
+    document.getElementById(
+        "statusMessage"
+    );
 
 
-    const {
-        data: {
-            user
-        },
-        error: userError
-    } =
-        await supabaseClient.auth.getUser();
+    /* CHECK LOGIN */
+
+    const userResult =
+    await supabaseClient.auth.getUser();
 
 
-    if (userError || !user) {
+    if (
+        userResult.error ||
+        !userResult.data.user
+    ) {
 
-        statusMessage.textContent =
-            "Please login before booking.";
+        status.textContent =
+        "Please login before making a booking.";
 
-        statusMessage.style.color =
-            "red";
+        status.style.color =
+        "red";
 
         return;
 
     }
+
+
+    const user =
+    userResult.data.user;
 
 
     const moveInDate =
-        document.getElementById(
-            "moveInDate"
-        ).value;
+    document.getElementById(
+        "moveInDate"
+    ).value;
 
 
     const message =
-        document.getElementById(
-            "message"
-        ).value;
+    document.getElementById(
+        "message"
+    ).value;
 
 
-    if (!moveInDate) {
+    status.textContent =
+    "Confirming booking...";
 
-        statusMessage.textContent =
-            "Please select a move-in date.";
-
-        statusMessage.style.color =
-            "red";
-
-        return;
-
-    }
+    status.style.color =
+    "#2563eb";
 
 
-    statusMessage.textContent =
-        "Confirming booking...";
+    /* INSERT BOOKING */
 
-    statusMessage.style.color =
-        "#2563eb";
+    const booking =
+    await supabaseClient
+        .from("bookings")
+        .insert({
 
+            student_id:
+            user.id,
 
-    /*
-        IMPORTANT:
+            accommodation_id:
+            accommodationId,
 
-        Your Supabase bookings table uses:
-
-        student_id
-        accommodation_id
-        nove_in_date
-        nessage
-        status
-
-        We therefore insert the accommodation ID,
-        NOT the accommodation name.
-    */
-
-
-    const bookingData = {
-
-        student_id: user.id,
-
-        accommodation_id:
-            accommodation.id,
-
-        nove_in_date:
+            nove_in_date:
             moveInDate,
 
-        nessage:
+            nessage:
             message || null,
 
-        status:
+            status:
             "Confirmed"
 
-    };
+        });
 
 
-    const {
-        data,
-        error
-    } =
-        await supabaseClient
-            .from("bookings")
-            .insert([
-                bookingData
-            ])
-            .select();
-
-
-    if (error) {
+    if (booking.error) {
 
         console.error(
-            "Booking error:",
-            error
+            booking.error
         );
 
 
-        statusMessage.textContent =
-            "Booking failed: " +
-            error.message;
+        status.textContent =
+        "Booking failed: " +
+        booking.error.message;
 
-        statusMessage.style.color =
-            "red";
+        status.style.color =
+        "red";
 
         return;
 
     }
 
 
-    statusMessage.textContent =
-        "Booking confirmed successfully!";
+    /* SUCCESS */
 
-    statusMessage.style.color =
-        "green";
+    status.textContent =
+    "Booking confirmed successfully!";
+
+    status.style.color =
+    "green";
 
 
     setTimeout(function() {
 
         window.location.href =
-            "dashboard.html";
+        "dashboard.html";
 
     }, 1200);
 
 }
 
 
-/* ERROR */
+/* ERROR MESSAGE */
 
 function showError(message) {
 
     document.getElementById(
         "loading"
     ).style.display =
-        "none";
-
-
-    document.getElementById(
-        "bookingContent"
-    ).style.display =
-        "none";
+    "none";
 
 
     const status =
-        document.getElementById(
-            "statusMessage"
-        );
+    document.getElementById(
+        "statusMessage"
+    );
 
 
     status.textContent =
-        message;
+    message;
 
     status.style.color =
-        "red";
+    "red";
 
 }
 
+
+/* START */
 
 loadAccommodation();
 
 </script>
 
-
 </body>
 
 </html>
+```
