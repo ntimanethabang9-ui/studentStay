@@ -1,12 +1,26 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>StudentStay | Book Accommodation</title>
+    <title>StudentStay | Confirm Booking</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        const SUPABASE_URL = "https://xciewmepytfgdhyjkkne.supabase.co";
+
+        const SUPABASE_KEY =
+            "sb_publishable_YeUsS4SbHTxBEGosZvDTWA_NAdK3FbU";
+
+        const supabaseClient = window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        );
+    </script>
 
     <style>
 
@@ -20,11 +34,12 @@
             font-family: Arial, sans-serif;
             background: #f5f7fb;
             color: #1f2937;
+            min-height: 100vh;
         }
 
         header {
             background: white;
-            padding: 20px 7%;
+            padding: 18px 7%;
             box-shadow: 0 2px 10px rgba(0,0,0,0.08);
         }
 
@@ -36,36 +51,42 @@
         }
 
         .container {
-            max-width: 600px;
+            width: 90%;
+            max-width: 650px;
             margin: 50px auto;
-            padding: 20px;
         }
 
         .booking-box {
             background: white;
             padding: 35px;
             border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            box-shadow: 0 5px 25px rgba(0,0,0,0.08);
         }
 
         h1 {
-            margin-bottom: 25px;
             text-align: center;
-        }
-
-        .property {
-            background: #eff6ff;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-        }
-
-        .property h2 {
-            color: #2563eb;
             margin-bottom: 10px;
         }
 
-        .property p {
+        .subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+
+        .accommodation-info {
+            background: #eff6ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .accommodation-info h2 {
+            color: #2563eb;
+            margin-bottom: 12px;
+        }
+
+        .accommodation-info p {
             margin-bottom: 8px;
         }
 
@@ -83,18 +104,25 @@
             border: 1px solid #d1d5db;
             border-radius: 7px;
             font-size: 15px;
+            font-family: Arial, sans-serif;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #2563eb;
         }
 
         textarea {
-            height: 100px;
+            min-height: 100px;
             resize: vertical;
         }
 
-        .book-button {
+        .confirm-button {
             width: 100%;
             padding: 14px;
             border: none;
-            border-radius: 7px;
+            border-radius: 8px;
             background: #2563eb;
             color: white;
             font-size: 16px;
@@ -102,28 +130,55 @@
             cursor: pointer;
         }
 
-        .book-button:hover {
+        .confirm-button:hover {
             background: #1d4ed8;
         }
 
-        .book-button:disabled {
-            background: #9ca3af;
-            cursor: not-allowed;
+        .back-button {
+            display: block;
+            width: 100%;
+            text-align: center;
+            margin-top: 12px;
+            padding: 13px;
+            background: #111827;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
         }
 
-        #message {
+        .message {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 18px;
             font-weight: bold;
+        }
+
+        .success {
+            color: #15803d;
+        }
+
+        .error {
+            color: #dc2626;
+        }
+
+        @media (max-width: 600px) {
+
+            .container {
+                width: 94%;
+                margin: 25px auto;
+            }
+
+            .booking-box {
+                padding: 25px;
+            }
+
         }
 
     </style>
 
 </head>
 
-
 <body>
-
 
 <header>
 
@@ -138,20 +193,26 @@
 
     <div class="booking-box">
 
-        <h1>
-            Book Accommodation
-        </h1>
+        <h1>Confirm Your Booking</h1>
+
+        <p class="subtitle">
+            Complete the details below to confirm your accommodation.
+        </p>
 
 
-        <div class="property">
+        <div class="accommodation-info">
 
-            <h2 id="bookingName">
-                Accommodation
+            <h2 id="accommodationName">
+                Loading...
             </h2>
 
-            <p id="bookingLocation"></p>
+            <p id="accommodationLocation">
+                📍 Loading...
+            </p>
 
-            <p id="bookingPrice"></p>
+            <p id="accommodationPrice">
+                💰 Loading...
+            </p>
 
         </div>
 
@@ -159,29 +220,7 @@
         <form onsubmit="confirmBooking(event)">
 
             <label>
-                Full Name
-            </label>
-
-            <input
-                type="text"
-                id="studentName"
-                required
-            >
-
-
-            <label>
-                Email Address
-            </label>
-
-            <input
-                type="email"
-                id="studentEmail"
-                required
-            >
-
-
-            <label>
-                Preferred Move-in Date
+                Move-in Date
             </label>
 
             <input
@@ -192,19 +231,19 @@
 
 
             <label>
-                Message to Owner
+                Message to Accommodation Owner
             </label>
 
             <textarea
-                id="messageText"
-                placeholder="Write a message to the accommodation owner..."
+                id="message"
+                placeholder="Write a message to the accommodation owner (optional)"
             ></textarea>
 
 
             <button
                 type="submit"
+                class="confirm-button"
                 id="confirmButton"
-                class="book-button"
             >
                 Confirm Booking
             </button>
@@ -212,83 +251,60 @@
         </form>
 
 
-        <div id="message"></div>
+        <div
+            id="messageBox"
+            class="message"
+        ></div>
+
+
+        <a
+            href="index.html#accommodation"
+            class="back-button"
+        >
+            ← Back to Accommodation
+        </a>
 
     </div>
 
 </div>
 
 
-<!-- SUPABASE -->
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-
 <script>
 
-const SUPABASE_URL =
-    "https://xciewmepytfgdhyjkkne.supabase.co";
-
-const SUPABASE_KEY =
-    "sb_publishable_YeUsS4SbHTxBEGosZvDTWA_NAdK3FbU";
-
-const supabaseClient =
-    supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-    );
-
-
-/* GET ACCOMMODATION */
-
-let bookingName =
+let selectedName =
     localStorage.getItem("bookingName");
 
-let bookingLocation =
+let selectedLocation =
     localStorage.getItem("bookingLocation");
 
-let bookingPrice =
+let selectedPrice =
     localStorage.getItem("bookingPrice");
 
 
-document.getElementById("bookingName")
+/* DISPLAY SELECTED ACCOMMODATION */
+
+document.getElementById("accommodationName")
     .textContent =
-    bookingName || "Accommodation";
+    selectedName || "Accommodation";
 
 
-document.getElementById("bookingLocation")
+document.getElementById("accommodationLocation")
     .textContent =
-    bookingLocation || "";
+    selectedLocation || "📍 Location not available";
 
 
-document.getElementById("bookingPrice")
+document.getElementById("accommodationPrice")
     .textContent =
-    bookingPrice || "";
+    selectedPrice || "💰 Price not available";
 
 
-/* GET STUDENT INFORMATION */
+/* SET MINIMUM DATE TO TODAY */
 
-let savedName =
-    localStorage.getItem("studentName");
+let today =
+    new Date().toISOString().split("T")[0];
 
-let savedEmail =
-    localStorage.getItem("studentEmail");
-
-
-if (savedName) {
-
-    document.getElementById("studentName")
-        .value = savedName;
-
-}
-
-
-if (savedEmail) {
-
-    document.getElementById("studentEmail")
-        .value = savedEmail;
-
-}
+document.getElementById("moveInDate").min =
+    today;
 
 
 /* CONFIRM BOOKING */
@@ -298,159 +314,211 @@ async function confirmBooking(event) {
     event.preventDefault();
 
 
-    const button =
+    let messageBox =
+        document.getElementById("messageBox");
+
+    let confirmButton =
         document.getElementById("confirmButton");
-
-    const messageBox =
-        document.getElementById("message");
-
-
-    button.disabled = true;
-
-    button.textContent =
-        "Booking...";
 
 
     messageBox.textContent = "";
+    messageBox.className = "message";
+
+
+    confirmButton.disabled = true;
+    confirmButton.textContent = "Confirming...";
 
 
     try {
 
-        /* GET CURRENT USER */
+        /* GET LOGGED-IN USER */
 
         const {
-            data: {
-                user
-            },
+            data: { user },
             error: userError
         } = await supabaseClient.auth.getUser();
 
 
-        if (userError || !user) {
+        if (userError) {
+            throw userError;
+        }
 
-            messageBox.textContent =
-                "Please login before booking.";
 
-            messageBox.style.color =
-                "red";
+        if (!user) {
 
-            button.disabled = false;
+            throw new Error(
+                "You must be logged in before making a booking."
+            );
 
-            button.textContent =
-                "Confirm Booking";
+        }
 
-            return;
+
+        /* GET ACCOMMODATION FROM DATABASE */
+
+        const {
+            data: accommodation,
+            error: accommodationError
+        } = await supabaseClient
+            .from("accommodations")
+            .select("id, name, location, price")
+            .eq("name", selectedName)
+            .limit(1)
+            .maybeSingle();
+
+
+        if (accommodationError) {
+            throw accommodationError;
+        }
+
+
+        if (!accommodation) {
+
+            throw new Error(
+                "The selected accommodation could not be found."
+            );
+
         }
 
 
         /* GET FORM DATA */
 
-        const student =
-            document.getElementById("studentName").value;
-
-        const email =
-            document.getElementById("studentEmail").value;
-
-        const date =
+        let moveInDate =
             document.getElementById("moveInDate").value;
 
-        const message =
-            document.getElementById("messageText").value;
+        let ownerMessage =
+            document.getElementById("message").value;
 
 
-        /* SAVE BOOKING */
+        /*
+           INSERT INTO BOOKINGS
+
+           Your database columns are:
+
+           id
+           student_id
+           accommodation_id
+           nove_in_date
+           nessage
+           status
+        */
 
         const {
-            error
+            data: booking,
+            error: bookingError
         } = await supabaseClient
             .from("bookings")
-            .insert({
+            .insert([
 
-                user_id: user.id,
+                {
+                    student_id: user.id,
 
-                accommodation_name:
-                    bookingName,
+                    accommodation_id:
+                        accommodation.id,
 
-                location:
-                    bookingLocation,
+                    nove_in_date:
+                        moveInDate,
 
-                price:
-                    bookingPrice,
+                    nessage:
+                        ownerMessage || null,
 
-                move_in_date:
-                    date,
+                    status:
+                        "Confirmed"
+                }
 
-                message:
-                    message,
-
-                status:
-                    "Confirmed"
-
-            });
+            ])
+            .select()
+            .single();
 
 
-        if (error) {
-
-            console.error(error);
-
-            messageBox.textContent =
-                "Booking failed: " +
-                error.message;
-
-            messageBox.style.color =
-                "red";
-
-            button.disabled = false;
-
-            button.textContent =
-                "Confirm Booking";
-
-            return;
+        if (bookingError) {
+            throw bookingError;
         }
 
 
-        /* SAVE NAME LOCALLY FOR DISPLAY */
+        /* SAVE BOOKING LOCALLY AS BACKUP */
+
+        let savedBookings =
+            JSON.parse(
+                localStorage.getItem("studentBookings")
+            ) || [];
+
+
+        savedBookings.push({
+
+            id: booking.id,
+
+            name:
+                accommodation.name,
+
+            location:
+                accommodation.location,
+
+            price:
+                "R" + accommodation.price + " / month",
+
+            date:
+                moveInDate,
+
+            message:
+                ownerMessage || "No message",
+
+            status:
+                "Confirmed"
+
+        });
+
 
         localStorage.setItem(
-            "studentName",
-            student
+            "studentBookings",
+            JSON.stringify(savedBookings)
         );
 
-        localStorage.setItem(
-            "studentEmail",
-            email
-        );
 
+        /* SUCCESS */
 
         messageBox.textContent =
             "Booking confirmed successfully!";
 
-        messageBox.style.color =
-            "green";
+        messageBox.className =
+            "message success";
 
+
+        confirmButton.textContent =
+            "Booking Confirmed";
+
+
+        /*
+           GO TO DASHBOARD
+           AFTER A SHORT DELAY
+        */
 
         setTimeout(function() {
 
             window.location.href =
                 "dashboard.html";
 
-        }, 1500);
+        }, 1200);
 
-    }
 
-    catch (error) {
+    } catch (error) {
 
-        console.error(error);
+        console.error(
+            "Booking error:",
+            error
+        );
+
 
         messageBox.textContent =
-            "Something went wrong. Please try again.";
+            error.message ||
+            "Something went wrong while confirming your booking.";
 
-        messageBox.style.color =
-            "red";
+        messageBox.className =
+            "message error";
 
-        button.disabled = false;
 
-        button.textContent =
+        confirmButton.disabled = false;
+
+        confirmButton.textContent =
             "Confirm Booking";
 
     }
@@ -459,7 +527,7 @@ async function confirmBooking(event) {
 
 </script>
 
-
 </body>
 
 </html>
+```
