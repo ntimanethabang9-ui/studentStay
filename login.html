@@ -303,7 +303,7 @@ async function loginUser(event) {
         const { data: profile, error: profileError } =
             await supabaseClient
                 .from("profiles")
-                .select("full_name, phone")
+               .select("full_name, phone, role")
                 .eq("id", user.id)
                 .single();
 
@@ -356,14 +356,21 @@ async function loginUser(event) {
 
         /* GO TO DASHBOARD */
 
-        setTimeout(function() {
+       setTimeout(function() {
 
-            window.location.href =
-                "dashboard.html";
+    if (profile && profile.role === "owner") {
 
-        }, 1000);
+        window.location.href =
+            "owner-dashboard.html";
 
+    } else {
 
+        window.location.href =
+            "dashboard.html";
+
+    }
+
+}, 1000);
     } catch (error) {
 
         console.error(error);
