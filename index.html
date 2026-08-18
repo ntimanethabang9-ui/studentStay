@@ -14,7 +14,22 @@
             margin: 0;
             padding: 0;
         }
+.save-button {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 2px solid #2563eb;
+    border-radius: 8px;
+    background: white;
+    color: #2563eb;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
 
+.save-button:hover {
+    background: #eff6ff;
+}
         body {
             font-family: Arial, Helvetica, sans-serif;
             background: #f5f7fb;
@@ -337,6 +352,7 @@
         }
 
     </style>
+    
 </head>
 
 
@@ -472,6 +488,12 @@
                         '3500',
                         'Wi-Fi, Security, Furnished'
                     )"
+                   <button
+    class="save-button"
+    onclick="toggleFavourite('Student Residence', 'Soshanguve', '3500')"
+>
+    ❤️ Save
+</button> 
                 >
                     View Details
                 </button>
@@ -520,6 +542,12 @@
                         '4000',
                         'Wi-Fi, Parking, Furnished'
                     )"
+                    <button
+    class="save-button"
+    onclick="toggleFavourite('Modern Student Room', 'Pretoria', '4000')"
+>
+    ❤️ Save
+</button>
                 >
                     View Details
                 </button>
@@ -568,6 +596,12 @@
                         '3000',
                         'Wi-Fi, Security, Kitchen'
                     )"
+                    <button
+    class="save-button"
+    onclick="toggleFavourite('Affordable Apartment', 'Soshanguve', '3000')"
+>
+    ❤️ Save
+</button>
                 >
                     View Details
                 </button>
@@ -779,7 +813,52 @@ function closeDetails() {
     document.getElementById("details").style.display = "none";
 
 }
+/* SAVE / UNSAVE FAVOURITE */
 
+function toggleFavourite(name, location, price) {
+
+    let favourites =
+        JSON.parse(
+            localStorage.getItem("studentFavourites")
+        ) || [];
+
+
+    let existingIndex =
+        favourites.findIndex(function(item) {
+
+            return item.name === name &&
+                   item.location === location;
+
+        });
+
+
+    if (existingIndex !== -1) {
+
+        favourites.splice(existingIndex, 1);
+
+        alert("Removed from favourites.");
+
+    } else {
+
+        favourites.push({
+
+            name: name,
+            location: location,
+            price: "R" + price + " / month"
+
+        });
+
+        alert("Added to favourites ❤️");
+
+    }
+
+
+    localStorage.setItem(
+        "studentFavourites",
+        JSON.stringify(favourites)
+    );
+
+}
 </script>
 
 </body>
