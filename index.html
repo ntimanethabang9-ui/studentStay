@@ -753,57 +753,27 @@ function bookAccommodation() {
     let name =
         document.getElementById("detailsName").textContent;
 
-    let location =
-        document.getElementById("detailsLocation")
-        .textContent
-        .replace("📍 Location: ", "");
-
-    let price =
-        document.getElementById("detailsPrice")
-        .textContent
-        .replace("💰 Price: R", "")
-        .replace(" per month", "");
-
-
     let accommodationId = null;
 
-
     if (name === "Student Residence") {
-
         accommodationId = 1;
-
-    } else if (name === "Modern Student Room") {
-
-        accommodationId = 2;
-
-    } else if (name === "Affordable Apartment") {
-
-        accommodationId = 3;
-
     }
 
+    if (name === "Modern Student Room") {
+        accommodationId = 2;
+    }
+
+    if (name === "Affordable Apartment") {
+        accommodationId = 3;
+    }
 
     if (!accommodationId) {
-
-        alert(
-            "Accommodation could not be identified."
-        );
-
+        alert("Accommodation could not be identified.");
         return;
-
     }
 
-
-    localStorage.setItem(
-        "bookingAccommodationId",
-        accommodationId
-    );
-
-
     window.location.href =
-        "booking.html?id=" +
-        accommodationId;
-
+        "booking.html?id=" + accommodationId;
 }
 
 /* SEARCH */
