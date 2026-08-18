@@ -1,0 +1,740 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>StudentStay | Owner Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+const SUPABASE_URL =
+"https://xciewmepytfgdhyjkkne.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_YeUsS4SbHTxBEGosZvDTWA_NAdK3FbU";
+
+const supabaseClient =
+window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+</script>
+
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f7fb;
+    color: #1f2937;
+}
+
+header {
+    background: white;
+    padding: 18px 7%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.logo {
+    font-size: 27px;
+    font-weight: bold;
+    color: #2563eb;
+}
+
+.logout {
+    background: #111827;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+h1 {
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    color: #6b7280;
+    margin-bottom: 30px;
+}
+
+.box {
+    background: white;
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    margin-bottom: 30px;
+}
+
+.box h2 {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+input,
+textarea {
+    width: 100%;
+    padding: 13px;
+    margin-bottom: 18px;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+    font-size: 15px;
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.add-button {
+    width: 100%;
+    padding: 14px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 7px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.add-button:hover {
+    background: #1d4ed8;
+}
+
+.message {
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+.properties {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.property {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.property img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.property-content {
+    padding: 18px;
+}
+
+.property h3 {
+    margin-bottom: 8px;
+}
+
+.location {
+    color: #6b7280;
+    margin-bottom: 8px;
+}
+
+.price {
+    color: #2563eb;
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.features {
+    color: #4b5563;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.delete-button {
+    width: 100%;
+    padding: 10px;
+    background: #dc2626;
+    color: white;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.empty {
+    color: #6b7280;
+    text-align: center;
+    padding: 20px;
+}
+
+@media (max-width: 800px) {
+
+    .properties {
+        grid-template-columns: 1fr;
+    }
+
+    header {
+        padding: 18px 20px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+<div class="logo">
+StudentStay Owner
+</div>
+
+<button
+class="logout"
+onclick="logout()"
+>
+Logout
+</button>
+
+</header>
+
+
+<div class="container">
+
+
+<h1>
+Owner Dashboard
+</h1>
+
+<p class="subtitle">
+Add and manage your accommodation listings.
+</p>
+
+
+<!-- ADD PROPERTY -->
+
+<div class="box">
+
+<h2>
+Add Accommodation
+</h2>
+
+
+<label>
+Accommodation Name
+</label>
+
+<input
+type="text"
+id="name"
+placeholder="e.g. Student Residence"
+>
+
+
+<label>
+Location
+</label>
+
+<input
+type="text"
+id="location"
+placeholder="e.g. Soshanguve"
+>
+
+
+<label>
+Monthly Price
+</label>
+
+<input
+type="number"
+id="price"
+placeholder="e.g. 3500"
+>
+
+
+<label>
+Features
+</label>
+
+<textarea
+id="features"
+placeholder="e.g. Wi-Fi, Security, Furnished"
+></textarea>
+
+
+<label>
+Image URL
+</label>
+
+<input
+type="url"
+id="image_url"
+placeholder="https://example.com/image.jpg"
+>
+
+
+<button
+class="add-button"
+onclick="addAccommodation()"
+>
+Add Accommodation
+</button>
+
+
+<div
+id="message"
+class="message"
+></div>
+
+</div>
+
+
+<!-- MY PROPERTIES -->
+
+<div class="box">
+
+<h2>
+My Accommodation
+</h2>
+
+<div
+id="properties"
+class="properties"
+>
+
+<p class="empty">
+Loading your properties...
+</p>
+
+</div>
+
+</div>
+
+
+</div>
+
+
+<script>
+
+
+let currentUser = null;
+
+
+/* CHECK LOGIN */
+
+async function checkUser() {
+
+    const {
+        data,
+        error
+    } =
+    await supabaseClient
+        .auth
+        .getUser();
+
+
+    if (
+        error ||
+        !data.user
+    ) {
+
+        window.location.href =
+            "login.html";
+
+        return;
+
+    }
+
+
+    currentUser =
+        data.user;
+
+
+    loadProperties();
+
+}
+
+
+/* ADD ACCOMMODATION */
+
+async function addAccommodation() {
+
+    if (!currentUser) {
+
+        alert(
+            "Please login first."
+        );
+
+        return;
+
+    }
+
+
+    const name =
+        document
+        .getElementById("name")
+        .value
+        .trim();
+
+
+    const location =
+        document
+        .getElementById("location")
+        .value
+        .trim();
+
+
+    const price =
+        document
+        .getElementById("price")
+        .value;
+
+
+    const features =
+        document
+        .getElementById("features")
+        .value
+        .trim();
+
+
+    const image_url =
+        document
+        .getElementById("image_url")
+        .value
+        .trim();
+
+
+    const message =
+        document
+        .getElementById("message");
+
+
+    if (
+        !name ||
+        !location ||
+        !price
+    ) {
+
+        message.textContent =
+            "Please fill in the accommodation name, location and price.";
+
+        message.style.color =
+            "red";
+
+        return;
+
+    }
+
+
+    message.textContent =
+        "Adding accommodation...";
+
+    message.style.color =
+        "#2563eb";
+
+
+    const {
+        error
+    } =
+    await supabaseClient
+        .from("accommodations")
+        .insert({
+
+            name: name,
+
+            location: location,
+
+            price: Number(price),
+
+            features: features,
+
+            image_url: image_url || null,
+
+            owner_id:
+                currentUser.id
+
+        });
+
+
+    if (error) {
+
+        console.error(error);
+
+        message.textContent =
+            "Could not add accommodation: " +
+            error.message;
+
+        message.style.color =
+            "red";
+
+        return;
+
+    }
+
+
+    message.textContent =
+        "Accommodation added successfully!";
+
+    message.style.color =
+        "green";
+
+
+    document
+        .getElementById("name")
+        .value = "";
+
+    document
+        .getElementById("location")
+        .value = "";
+
+    document
+        .getElementById("price")
+        .value = "";
+
+    document
+        .getElementById("features")
+        .value = "";
+
+    document
+        .getElementById("image_url")
+        .value = "";
+
+
+    loadProperties();
+
+}
+
+
+/* LOAD OWNER PROPERTIES */
+
+async function loadProperties() {
+
+    const properties =
+        document
+        .getElementById("properties");
+
+
+    const {
+        data,
+        error
+    } =
+    await supabaseClient
+        .from("accommodations")
+        .select("*")
+        .eq(
+            "owner_id",
+            currentUser.id
+        )
+        .order(
+            "id",
+            {
+                ascending: false
+            }
+        );
+
+
+    if (error) {
+
+        console.error(error);
+
+        properties.innerHTML =
+            "<p class='empty'>" +
+            "Could not load properties: " +
+            error.message +
+            "</p>";
+
+        return;
+
+    }
+
+
+    if (
+        !data ||
+        data.length === 0
+    ) {
+
+        properties.innerHTML =
+            "<p class='empty'>" +
+            "You have not added any accommodation yet." +
+            "</p>";
+
+        return;
+
+    }
+
+
+    properties.innerHTML = "";
+
+
+    data.forEach(function(property) {
+
+        const card =
+            document.createElement("div");
+
+        card.className =
+            "property";
+
+
+        const image =
+            property.image_url ||
+            "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80";
+
+
+        card.innerHTML = `
+
+            <img
+                src="${image}"
+                alt="Accommodation"
+            >
+
+            <div class="property-content">
+
+                <h3>
+                    ${property.name}
+                </h3>
+
+                <p class="location">
+                    📍 ${property.location}
+                </p>
+
+                <p class="price">
+                    R${property.price} / month
+                </p>
+
+                <p class="features">
+                    ${property.features || "No features added"}
+                </p>
+
+                <button
+                    class="delete-button"
+                    onclick="deleteAccommodation(${property.id})"
+                >
+                    Delete
+                </button>
+
+            </div>
+
+        `;
+
+
+        properties.appendChild(card);
+
+    });
+
+}
+
+
+/* DELETE ACCOMMODATION */
+
+async function deleteAccommodation(id) {
+
+    const confirmed =
+        confirm(
+            "Are you sure you want to delete this accommodation?"
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    const {
+        error
+    } =
+    await supabaseClient
+        .from("accommodations")
+        .delete()
+        .eq(
+            "id",
+            id
+        )
+        .eq(
+            "owner_id",
+            currentUser.id
+        );
+
+
+    if (error) {
+
+        alert(
+            "Could not delete accommodation: " +
+            error.message
+        );
+
+        return;
+
+    }
+
+
+    alert(
+        "Accommodation deleted successfully."
+    );
+
+
+    loadProperties();
+
+}
+
+
+/* LOGOUT */
+
+async function logout() {
+
+    await supabaseClient
+        .auth
+        .signOut();
+
+
+    window.location.href =
+        "login.html";
+
+}
+
+
+/* START */
+
+checkUser();
+
+</script>
+
+
+</body>
+
+</html>
+```
