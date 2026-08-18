@@ -224,19 +224,17 @@ let bookingPrice =
     localStorage.getItem("bookingPrice");
 
 
-document.getElementById("bookingName")
-    .textContent = bookingName || "Accommodation";
+document.getElementById("bookingName").textContent =
+    bookingName || "Accommodation";
+
+document.getElementById("bookingLocation").textContent =
+    bookingLocation || "";
+
+document.getElementById("bookingPrice").textContent =
+    bookingPrice || "";
 
 
-document.getElementById("bookingLocation")
-    .textContent = bookingLocation || "";
-
-
-document.getElementById("bookingPrice")
-    .textContent = bookingPrice || "";
-
-
-/* GET USER INFORMATION */
+/* GET SAVED STUDENT INFORMATION */
 
 let savedName =
     localStorage.getItem("studentName");
@@ -246,18 +244,13 @@ let savedEmail =
 
 
 if (savedName) {
-
-    document.getElementById("studentName")
-        .value = savedName;
-
+    document.getElementById("studentName").value =
+        savedName;
 }
 
-
 if (savedEmail) {
-
-    document.getElementById("studentEmail")
-        .value = savedEmail;
-
+    document.getElementById("studentEmail").value =
+        savedEmail;
 }
 
 
@@ -281,47 +274,83 @@ function confirmBooking(event) {
         document.getElementById("messageText").value;
 
 
+    /* SAVE STUDENT INFORMATION */
+
     localStorage.setItem(
-        "bookingStudent",
+        "studentName",
         student
     );
 
     localStorage.setItem(
-        "bookingEmail",
+        "studentEmail",
         email
     );
 
-    localStorage.setItem(
-        "bookingDate",
-        date
-    );
+
+    /* GET EXISTING BOOKINGS */
+
+    let bookings =
+        JSON.parse(
+            localStorage.getItem("bookings")
+        ) || [];
+
+
+    /* CREATE NEW BOOKING */
+
+    let newBooking = {
+
+        id: Date.now(),
+
+        accommodation: bookingName,
+
+        location: bookingLocation,
+
+        price: bookingPrice,
+
+        student: student,
+
+        email: email,
+
+        moveInDate: date,
+
+        message: message,
+
+        status: "Confirmed"
+
+    };
+
+
+    /* ADD NEW BOOKING TO THE LIST */
+
+    bookings.push(newBooking);
+
+
+    /* SAVE ALL BOOKINGS */
 
     localStorage.setItem(
-        "bookingMessage",
-        message
+        "bookings",
+        JSON.stringify(bookings)
     );
 
-    localStorage.setItem(
-        "bookingStatus",
-        "Confirmed"
-    );
 
+    /* SHOW SUCCESS MESSAGE */
 
     document.getElementById("message")
         .textContent =
         "Booking confirmed successfully!";
 
-
     document.getElementById("message")
         .style.color = "green";
 
+
+    /* GO TO DASHBOARD */
 
     setTimeout(function() {
 
         window.location.href =
             "dashboard.html";
 
-    }, 2000);
+    }, 1500);
 
 }
 
