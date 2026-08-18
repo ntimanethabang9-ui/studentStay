@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -360,7 +361,7 @@ async function registerUser(event) {
         ).value;
 
 
-    /* CHECK PASSWORDS */
+    /* CHECK PASSWORD */
 
     if (
         password !==
@@ -403,7 +404,7 @@ async function registerUser(event) {
     try {
 
 
-        /* CREATE SUPABASE AUTH USER */
+        /* CREATE AUTH ACCOUNT */
 
         const {
             data: authData,
@@ -459,7 +460,7 @@ async function registerUser(event) {
             authData.user;
 
 
-        /* INSERT PROFILE */
+        /* SAVE PROFILE */
 
         const {
             error: profileError
@@ -470,9 +471,7 @@ async function registerUser(event) {
 
                 id: user.id,
 
-                name: name,
-
-                email: email,
+                full_name: name,
 
                 phone: phone,
 
@@ -492,11 +491,6 @@ async function registerUser(event) {
                 profileError
             );
 
-
-            /*
-            The Auth account was created,
-            but the profile failed.
-            */
 
             message.textContent =
                 "Account created, but your profile could not be saved: " +
@@ -526,7 +520,7 @@ async function registerUser(event) {
 
         /*
         If email confirmation is enabled,
-        the user must confirm their email.
+        there will be no active session yet.
         */
 
         if (
@@ -593,3 +587,4 @@ async function registerUser(event) {
 </body>
 
 </html>
+```
