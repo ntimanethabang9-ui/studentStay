@@ -9,6 +9,8 @@
 
     <title>StudentStay | My Dashboard</title>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
 
         * {
@@ -41,7 +43,7 @@
 
         nav {
             display: flex;
-            gap: 12px;
+            gap: 18px;
             align-items: center;
         }
 
@@ -111,6 +113,7 @@
         .booking-card p {
             margin-bottom: 10px;
             color: #4b5563;
+            line-height: 1.5;
         }
 
         .status {
@@ -160,6 +163,14 @@
             text-align: center;
             border-radius: 14px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            grid-column: 1 / -1;
+        }
+
+        .loading {
+            background: white;
+            padding: 40px;
+            text-align: center;
+            border-radius: 14px;
             grid-column: 1 / -1;
         }
 
@@ -240,8 +251,6 @@
 <div class="container">
 
 
-    <!-- WELCOME -->
-
     <div class="welcome">
 
         <h1 id="welcomeName">
@@ -259,8 +268,6 @@
     </div>
 
 
-    <!-- BOOKINGS -->
-
     <h2 class="section-title">
         My Bookings
     </h2>
@@ -269,7 +276,13 @@
     <div
         id="bookings"
         class="bookings"
-    ></div>
+    >
+
+        <div class="loading">
+            Loading your bookings...
+        </div>
+
+    </div>
 
 
     <a
@@ -302,62 +315,168 @@
 
 <script>
 
+/* =================================
+   SUPABASE CONNECTION
+   ================================= */
 
-/* CHECK LOGIN */
+const SUPABASE_URL =
+    "https://xciewmepytfgdhyjkkne.supabase.co";
 
-let loggedIn =
-    localStorage.getItem("loggedIn");
+const SUPABASE_KEY =
+    "sb_publishable_YeUsS4SbHTxBEGosZvDTWA_NAdK3FbU";
 
 
-if (loggedIn !== "true") {
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
 
-    window.location.href =
-        "login.html";
+
+/* =================================
+   CHECK LOGIN
+   ================================= */
+
+async function checkLogin() {
+
+    const {
+        data: { user }
+    } = await supabaseClient.auth.getUser();
+
+
+    if (!user) {
+
+        window.location.href =
+            "login.html";
+
+        return null;
+
+    }
+
+
+    return user;
 
 }
 
 
-/* STUDENT INFORMATION */
+/* =================================
+   LOAD STUDENT
+   ================================= */
 
-let studentName =
-    localStorage.getItem("studentName");
+async function loadStudent() {
 
-let studentEmail =
-    localStorage.getItem("studentEmail");
-
-
-document.getElementById("welcomeName")
-    .textContent =
-    "Welcome, " + (studentName || "Student");
+    const user =
+        await checkLogin();
 
 
-document.getElementById("studentEmail")
-    .textContent =
-    "Email: " + (studentEmail || "Not available");
+    if (!user) {
+        return;
+    }
 
 
-/* GET ALL BOOKINGS */
-
-let bookings =
-    JSON.parse(
-        localStorage.getItem("studentBookings")
-    ) || [];
+    document.getElementById("studentEmail")
+        .textContent =
+        "Email: " + (user.email || "Not available");
 
 
-let bookingsContainer =
-    document.getElementById("bookings");
+    const {
+        data: profile,
+        error
+    } = await supabaseClient
+        .from("profiles")
+        .select("full_name")
+        .eq("id", user.id)
+        .maybeSingle();
 
 
-/* DISPLAY BOOKINGS */
+    if (!error && profile && profile.full_name) {
 
-function displayBookings() {
+        document.getElementById("welcomeName")
+            .textContent =
+            "Welcome, " + profile.full_name;
 
-    bookingsContainer.innerHTML = "";
+    } else {
+
+        document.getElementById("welcomeName")
+            .textContent =
+            "Welcome, Student";
+
+    }
+
+
+    loadBookings(user);
+
+}
+
+
+/* =================================
+   LOAD BOOKINGS FROM SUPABASE
+   ================================= */
+
+async function loadBookings(user) {
+
+    const container =
+        document.getElementById("bookings");
+
+
+    const {
+        data: bookings,
+        error
+    } = await supabaseClient
+        .from("bookings")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", {
+            ascending: false
+        });
+
+
+    if (error) {
+
+        console.error(error);
+
+        container.innerHTML = `
+
+            <div class="no-bookings">
+
+                <h2>
+                    Could not load bookings
+                </h2>
+
+                <p>
+                    ${error.message}
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    displayBookings(bookings || []);
+
+}
+
+
+/* =================================
+   DISPLAY BOOKINGS
+   ================================= */
+
+function displayBookings(bookings) {
+
+    const container =
+        document.getElementById("bookings");
+
+
+    container.innerHTML = "";
 
 
     if (bookings.length === 0) {
 
-        bookingsContainer.innerHTML = `
+        container.innerHTML = `
 
             <div class="no-bookings">
 
@@ -378,10 +497,9 @@ function displayBookings() {
     }
 
 
-    bookings.forEach(function(booking, index) {
+    bookings.forEach(function(booking) {
 
-
-        let card =
+        const card =
             document.createElement("div");
 
 
@@ -389,40 +507,54 @@ function displayBookings() {
             "booking-card";
 
 
+        const moveInDate =
+            booking.move_in_date
+            ? booking.move_in_date
+            : "Not specified";
+
+
+        const status =
+            booking.status || "Confirmed";
+
+
         card.innerHTML = `
 
             <h2>
-                ${booking.name || "Accommodation"}
+                ${escapeHTML(
+                    booking.accommodation_name
+                )}
             </h2>
 
             <p>
-                📍 ${booking.location || "Location not available"}
+                📍 ${escapeHTML(
+                    booking.location || "Location not available"
+                )}
             </p>
 
             <p>
-                💰 ${booking.price || "Price not available"}
+                💰 ${escapeHTML(
+                    booking.price || "Price not available"
+                )}
             </p>
 
             <p>
                 📅 Move-in Date:
-                ${booking.date || "Not specified"}
+                ${escapeHTML(moveInDate)}
             </p>
 
             <p>
-                ✉️ ${booking.email || studentEmail || ""}
-            </p>
-
-            <p>
-                💬 ${booking.message || "No message"}
+                💬 ${escapeHTML(
+                    booking.message || "No message"
+                )}
             </p>
 
             <span class="status">
-                ${booking.status || "Confirmed"}
+                ${escapeHTML(status)}
             </span>
 
             <button
                 class="cancel-button"
-                onclick="cancelBooking(${index})"
+                onclick="cancelBooking('${booking.id}')"
             >
                 Cancel Booking
             </button>
@@ -430,18 +562,37 @@ function displayBookings() {
         `;
 
 
-        bookingsContainer.appendChild(card);
+        container.appendChild(card);
 
     });
 
 }
 
 
-/* CANCEL BOOKING */
+/* =================================
+   HTML SECURITY
+   ================================= */
 
-function cancelBooking(index) {
+function escapeHTML(value) {
 
-    let answer =
+    const div =
+        document.createElement("div");
+
+    div.textContent =
+        value;
+
+    return div.innerHTML;
+
+}
+
+
+/* =================================
+   CANCEL BOOKING
+   ================================= */
+
+async function cancelBooking(id) {
+
+    const answer =
         confirm(
             "Are you sure you want to cancel this booking?"
         );
@@ -452,29 +603,48 @@ function cancelBooking(index) {
     }
 
 
-    bookings.splice(index, 1);
+    const {
+        error
+    } = await supabaseClient
+        .from("bookings")
+        .delete()
+        .eq("id", id);
 
 
-    localStorage.setItem(
-        "studentBookings",
-        JSON.stringify(bookings)
-    );
+    if (error) {
+
+        alert(
+            "Could not cancel booking: " +
+            error.message
+        );
+
+        return;
+
+    }
 
 
-    displayBookings();
+    const user =
+        await checkLogin();
+
+
+    if (user) {
+
+        loadBookings(user);
+
+    }
 
 }
 
 
-/* LOGOUT */
+/* =================================
+   LOGOUT
+   ================================= */
 
-function logout() {
+async function logout() {
 
-    localStorage.setItem(
-        "loggedIn",
-        "false"
-    );
+    await supabaseClient.auth.signOut();
 
+    localStorage.removeItem("loggedIn");
 
     window.location.href =
         "login.html";
@@ -482,9 +652,11 @@ function logout() {
 }
 
 
-/* LOAD BOOKINGS */
+/* =================================
+   START
+   ================================= */
 
-displayBookings();
+loadStudent();
 
 </script>
 
