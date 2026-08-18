@@ -10,7 +10,28 @@
 
     <p>Find affordable student accommodation.</p>
 
-    <button>Search Accommodation</button>
+    <input
+    type="text"
+    id="searchInput"
+    placeholder="Enter your campus or location"
+>
 
+<button onclick="searchAccommodation()">Search</button>
+<script>
+    function searchAccommodation() {
+        const searchInput = document.getElementById("searchInput").value.toLowerCase();
+        const cards = document.querySelectorAll(".card");
+
+        cards.forEach(function(card) {
+            const text = card.innerText.toLowerCase();
+
+            if (text.includes(searchInput)) {
+                card.style.display = "block";
+            } else {
+                card.style.display = "none";
+            }
+        });
+    }
+</script>
 </body>
 </html>
