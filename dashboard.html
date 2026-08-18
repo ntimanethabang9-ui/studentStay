@@ -617,37 +617,44 @@ async function loadBookings(userId) {
 
 
 /* CANCEL BOOKING */
+async function cancelBooking(bookingId) {
 
-async function cancelBooking(
-    bookingId
-) {
-
-
-    const answer =
-        confirm(
-            "Are you sure you want to cancel this booking?"
-        );
-
+    const answer = confirm(
+        "Are you sure you want to cancel this booking?"
+    );
 
     if (!answer) {
         return;
     }
 
+    const {
+        data: {
+            user
+        }
+    } = await supabaseClient.auth.getUser();
+
+
+    if (!user) {
+
+        alert("Please login again.");
+
+        window.location.href = "login.html";
+
+        return;
+    }
+
 
     const result =
-    await supabaseClient
-
-        .from("bookings")
-
-        .delete()
-
-        .eq(
-            "id",
-            bookingId
-        );
+        await supabaseClient
+            .from("bookings")
+            .delete()
+            .eq("id", bookingId)
+            .eq("student_id", user.id);
 
 
     if (result.error) {
+
+        console.error(result.error);
 
         alert(
             "Could not cancel booking: " +
@@ -655,18 +662,14 @@ async function cancelBooking(
         );
 
         return;
-
     }
 
 
-    alert(
-        "Booking cancelled."
-    );
+    alert("Booking cancelled successfully.");
 
-
-    location.reload();
-
+    loadBookings(user.id);
 }
+
 
 
 /* LOGOUT */
