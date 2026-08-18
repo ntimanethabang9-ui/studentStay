@@ -10,6 +10,26 @@
 
     <title>StudentStay | Register</title>
 
+    <!-- SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+
+        const SUPABASE_URL =
+            "https://xciewmepytfgdhyjkkne.supabase.co";
+
+        const SUPABASE_KEY =
+            "YOUR_PUBLISHABLE_KEY";
+
+        const supabaseClient =
+            window.supabase.createClient(
+                SUPABASE_URL,
+                SUPABASE_KEY
+            );
+
+    </script>
+
+
     <style>
 
         * {
@@ -173,6 +193,18 @@
 
 
             <label>
+                Phone Number
+            </label>
+
+            <input
+                type="tel"
+                id="phone"
+                placeholder="Enter your phone number"
+                required
+            >
+
+
+            <label>
                 Password
             </label>
 
@@ -180,6 +212,7 @@
                 type="password"
                 id="password"
                 placeholder="Create a password"
+                minlength="6"
                 required
             >
 
@@ -192,6 +225,7 @@
                 type="password"
                 id="confirmPassword"
                 placeholder="Confirm your password"
+                minlength="6"
                 required
             >
 
@@ -229,16 +263,19 @@
 
 <script>
 
-function registerUser(event) {
+async function registerUser(event) {
 
     event.preventDefault();
 
 
     let name =
-        document.getElementById("name").value;
+        document.getElementById("name").value.trim();
 
     let email =
-        document.getElementById("email").value;
+        document.getElementById("email").value.trim();
+
+    let phone =
+        document.getElementById("phone").value.trim();
 
     let password =
         document.getElementById("password").value;
@@ -246,13 +283,18 @@ function registerUser(event) {
     let confirmPassword =
         document.getElementById("confirmPassword").value;
 
+    let message =
+        document.getElementById("message");
+
+
+    /* CHECK PASSWORDS */
 
     if (password !== confirmPassword) {
 
-        document.getElementById("message").textContent =
+        message.textContent =
             "Passwords do not match.";
 
-        document.getElementById("message").style.color =
+        message.style.color =
             "red";
 
         return;
@@ -260,43 +302,114 @@ function registerUser(event) {
     }
 
 
-    /*
-       TEMPORARY ACCOUNT STORAGE
+    /* SHOW LOADING */
 
-       This saves the account in the browser.
-       Later we can connect StudentStay
-       to a real database.
-    */
+    message.textContent =
+        "Creating your account...";
 
-    localStorage.setItem(
-        "studentName",
-        name
-    );
-
-    localStorage.setItem(
-        "studentEmail",
-        email
-    );
-
-    localStorage.setItem(
-        "studentPassword",
-        password
-    );
+    message.style.color =
+        "#2563eb";
 
 
-    document.getElementById("message").textContent =
-        "Account created successfully!";
+    try {
 
-    document.getElementById("message").style.color =
-        "green";
+        /* CREATE SUPABASE ACCOUNT */
+
+        const { data, error } =
+            await supabaseClient.auth.signUp({
+
+                email: email,
+
+                password: password
+
+            });
 
 
-    setTimeout(function() {
+        if (error) {
 
-        window.location.href =
-            "login.html";
+            throw error;
 
-    }, 1500);
+        }
+
+
+        /* CHECK USER */
+
+        if (!data.user) {
+
+            throw new Error(
+                "Account could not be created."
+            );
+
+        }
+
+
+        /* SAVE PROFILE */
+
+        const { error: profileError } =
+            await supabaseClient
+                .from("profiles")
+                .insert({
+
+                    id: data.user.id,
+
+                    full_name: name,
+
+                    phone: phone
+
+                });
+
+
+        if (profileError) {
+
+            throw profileError;
+
+        }
+
+
+        /* SUCCESS */
+
+        message.textContent =
+            "Account created successfully!";
+
+        message.style.color =
+            "green";
+
+
+        /* SAVE BASIC DETAILS LOCALLY FOR NOW */
+
+        localStorage.setItem(
+            "studentName",
+            name
+        );
+
+        localStorage.setItem(
+            "studentEmail",
+            email
+        );
+
+
+        /* GO TO LOGIN */
+
+        setTimeout(function() {
+
+            window.location.href =
+                "login.html";
+
+        }, 1500);
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        message.textContent =
+            error.message ||
+            "Something went wrong.";
+
+        message.style.color =
+            "red";
+
+    }
 
 }
 
