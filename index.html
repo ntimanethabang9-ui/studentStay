@@ -9,29 +9,31 @@
     <h1>StudentStay</h1>
 
     <p>Find affordable student accommodation.</p>
+<div class="search-box">
+    <input type="text" id="searchInput" placeholder="Enter your campus or location">
 
-    <input
-    type="text"
-    id="searchInput"
-    placeholder="Enter your campus or location"
->
+    <button type="button" onclick="searchAccommodation()">Search</button>
+</div>
 
-<button onclick="searchAccommodation()">Search</button>
 <script>
-    function searchAccommodation() {
-        const searchInput = document.getElementById("searchInput").value.toLowerCase();
-        const cards = document.querySelectorAll(".card");
+function searchAccommodation() {
 
-        cards.forEach(function(card) {
-            const text = card.innerText.toLowerCase();
+    let search = document.getElementById("searchInput").value.toLowerCase().trim();
 
-            if (text.includes(searchInput)) {
-                card.style.display = "block";
-            } else {
-                card.style.display = "none";
-            }
-        });
-    }
+    let cards = document.querySelectorAll(".card");
+
+    cards.forEach(function(card) {
+
+        let information = card.textContent.toLowerCase();
+
+        if (search === "" || information.includes(search)) {
+            card.style.display = "";
+        } else {
+            card.style.display = "none";
+        }
+
+    });
+}
 </script>
 </body>
 </html>
