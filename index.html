@@ -976,7 +976,6 @@ function showDetails(
         });
 
 }
-
 <script>
 
 /* BOOK ACCOMMODATION */
@@ -995,19 +994,12 @@ function bookAccommodation() {
 }
 
 
-/* SEARCH AND PRICE FILTER */
+/* SEARCH */
 
 function searchAccommodation() {
 
-    let search = document
-        .getElementById("searchInput")
-        .value
-        .toLowerCase()
-        .trim();
-
-    let maxPrice = document
-        .getElementById("priceInput")
-        .value;
+    let search = document.getElementById("searchInput").value.toLowerCase().trim();
+    let maxPrice = document.getElementById("priceInput").value;
 
     let cards = document.querySelectorAll(".card");
 
@@ -1015,11 +1007,9 @@ function searchAccommodation() {
 
         let information = card.textContent.toLowerCase();
 
-        let priceText =
-            card.querySelector(".price").textContent;
+        let priceText = card.querySelector(".price").textContent;
 
-        let price =
-            parseInt(priceText.replace(/\D/g, ""));
+        let price = parseInt(priceText.replace(/\D/g, ""));
 
         let locationMatch =
             search === "" || information.includes(search);
@@ -1065,18 +1055,6 @@ function showDetails(name, location, price, features) {
 function closeDetails() {
 
     document.getElementById("details").style.display = "none";
-
-}
-
-</script>
-
-/* CLOSE DETAILS */
-
-function closeDetails() {
-
-    document
-        .getElementById("details")
-        .style.display = "none";
 
 }
 
