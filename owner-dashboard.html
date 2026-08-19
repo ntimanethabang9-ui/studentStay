@@ -453,16 +453,16 @@ let currentUser = null;
 async function checkUser() {
 
     const {
-        data,
-        error
-    } =
-    await supabaseClient.auth.getUser();
+        data: {
+            user
+        },
+        error: userError
+    } = await supabaseClient.auth.getUser();
 
 
-    if (
-        error ||
-        !data.user
-    ) {
+    if (userError || !user) {
+
+        alert("Please login first.");
 
         window.location.href =
             "login.html";
@@ -472,31 +472,48 @@ async function checkUser() {
     }
 
 
-    currentUser =
-        data.user;
+    console.log("Logged in user:", user.id);
+    console.log("Logged in email:", user.email);
 
-
-    /* CHECK OWNER ROLE */
 
     const {
         data: profile,
         error: profileError
-    } =
-    await supabaseClient
+    } = await supabaseClient
         .from("profiles")
-        .select("role")
-        .eq(
-            "id",
-            currentUser.id
-        )
+        .select("id, full_name, role")
+        .eq("id", user.id)
         .single();
 
 
-    if (
-        profileError ||
-        !profile ||
-        profile.role !== "owner"
-    ) {
+    console.log("Profile:", profile);
+    console.log("Profile error:", profileError);
+
+
+    if (profileError) {
+
+        alert(
+            "Could not load your profile: " +
+            profileError.message
+        );
+
+        return;
+
+    }
+
+
+    if (!profile) {
+
+        alert(
+            "Your profile could not be found."
+        );
+
+        return;
+
+    }
+
+
+    if (profile.role !== "owner") {
 
         alert(
             "Access denied. Owner account required."
@@ -510,12 +527,21 @@ async function checkUser() {
     }
 
 
+    /* OWNER CONFIRMED */
+
+    currentUser = user;
+
+
+    console.log(
+        "OWNER CONFIRMED ✅"
+    );
+
+
     loadProperties();
 
     loadBookings();
 
 }
-
 
 /* ADD ACCOMMODATION */
 
