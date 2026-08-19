@@ -780,20 +780,18 @@ async function loadProperties() {
 
 }
 
-
 /* LOAD BOOKINGS */
 
 async function loadBookings() {
 
     const bookingsContainer =
-    document.getElementById("bookings");
-
+        document.getElementById("bookings");
 
     bookingsContainer.innerHTML =
-    "<p class='empty'>Loading bookings...</p>";
+        "<p class='empty'>Loading bookings...</p>";
 
 
-    /* FIRST GET OWNER'S ACCOMMODATION */
+    /* GET OWNER'S ACCOMMODATIONS */
 
     const {
         data: accommodations,
@@ -810,14 +808,15 @@ async function loadBookings() {
 
     if (accommodationError) {
 
+        console.error(accommodationError);
+
         bookingsContainer.innerHTML =
-        "<p class='empty'>" +
-        "Could not load accommodations: " +
-        accommodationError.message +
-        "</p>";
+            "<p class='empty'>" +
+            "Could not load your accommodations: " +
+            accommodationError.message +
+            "</p>";
 
         return;
-
     }
 
 
@@ -827,20 +826,21 @@ async function loadBookings() {
     ) {
 
         bookingsContainer.innerHTML =
-        "<p class='empty'>No accommodation listings yet.</p>";
+            "<p class='empty'>" +
+            "You have no accommodation listings yet." +
+            "</p>";
 
         return;
-
     }
 
 
+    /* GET BOOKINGS FOR OWNER'S ACCOMMODATIONS */
+
     const accommodationIds =
-    accommodations.map(
-        item => item.id
-    );
+        accommodations.map(
+            accommodation => accommodation.id
+        );
 
-
-    /* GET BOOKINGS */
 
     const {
         data: bookings,
@@ -863,14 +863,15 @@ async function loadBookings() {
 
     if (bookingError) {
 
+        console.error(bookingError);
+
         bookingsContainer.innerHTML =
-        "<p class='empty'>" +
-        "Could not load bookings: " +
-        bookingError.message +
-        "</p>";
+            "<p class='empty'>" +
+            "Could not load bookings: " +
+            bookingError.message +
+            "</p>";
 
         return;
-
     }
 
 
@@ -880,77 +881,93 @@ async function loadBookings() {
     ) {
 
         bookingsContainer.innerHTML =
-        "<p class='empty'>" +
-        "No student bookings yet." +
-        "</p>";
+            "<p class='empty'>" +
+            "No student bookings yet." +
+            "</p>";
 
         return;
-
     }
 
 
     bookingsContainer.innerHTML = "";
 
 
+    /* DISPLAY EACH BOOKING */
+
     for (
         const booking of bookings
     ) {
 
         const accommodation =
-        accommodations.find(
-            item =>
-            item.id ===
-            booking.accommodation_id
-        );
+            accommodations.find(
+                item =>
+                    item.id ===
+                    booking.accommodation_id
+            );
 
 
         /* GET STUDENT PROFILE */
 
         let studentName =
-        "Student";
-
-        let studentPhone =
-        "Not provided";
-
-
-        const {
-            data: studentProfile
-        } =
-        await supabaseClient
-            .from("profiles")
-            .select(
-                "full_name, phone"
-            )
-            .eq(
-                "id",
-                booking.student_id
-            )
-            .single();
-
-
-        if (studentProfile) {
-
-            studentName =
-            studentProfile.full_name ||
             "Student";
 
-            studentPhone =
-            studentProfile.phone ||
+        let studentPhone =
             "Not provided";
+
+
+        if (booking.student_id) {
+
+            const {
+                data: studentProfile,
+                error: studentError
+            } =
+            await supabaseClient
+                .from("profiles")
+                .select(
+                    "full_name, phone"
+                )
+                .eq(
+                    "id",
+                    booking.student_id
+                )
+                .maybeSingle();
+
+
+            if (studentError) {
+
+                console.error(
+                    "Student profile error:",
+                    studentError
+                );
+
+            }
+
+
+            if (studentProfile) {
+
+                studentName =
+                    studentProfile.full_name ||
+                    "Student";
+
+                studentPhone =
+                    studentProfile.phone ||
+                    "Not provided";
+
+            }
 
         }
 
 
         const card =
-        document.createElement("div");
+            document.createElement("div");
 
         card.className =
-        "booking";
+            "booking";
 
 
         const status =
-        booking.status ||
-        "pending";
+            booking.status ||
+            "pending";
 
 
         card.innerHTML = `
@@ -975,12 +992,18 @@ async function loadBookings() {
 
             <p>
                 📅 <strong>Move-in date:</strong>
-                ${booking.move_in_date || "Not provided"}
+                ${
+                    booking.move_in_date ||
+                    "Not provided"
+                }
             </p>
 
             <p>
                 💬 <strong>Message:</strong>
-                ${booking.message || "No message"}
+                ${
+                    booking.message ||
+                    "No message"
+                }
             </p>
 
             <span class="status ${status}">
@@ -991,29 +1014,29 @@ async function loadBookings() {
                 status === "pending"
                 ? `
 
-                <div class="booking-buttons">
+                    <div class="booking-buttons">
 
-                    <button
-                        class="accept-button"
-                        onclick="updateBookingStatus(
-                            ${booking.id},
-                            'accepted'
-                        )"
-                    >
-                        ✓ Accept
-                    </button>
+                        <button
+                            class="accept-button"
+                            onclick="updateBookingStatus(
+                                ${booking.id},
+                                'accepted'
+                            )"
+                        >
+                            ✓ Accept
+                        </button>
 
-                    <button
-                        class="reject-button"
-                        onclick="updateBookingStatus(
-                            ${booking.id},
-                            'rejected'
-                        )"
-                    >
-                        ✕ Reject
-                    </button>
+                        <button
+                            class="reject-button"
+                            onclick="updateBookingStatus(
+                                ${booking.id},
+                                'rejected'
+                            )"
+                        >
+                            ✕ Reject
+                        </button>
 
-                </div>
+                    </div>
 
                 `
                 : ""
@@ -1027,6 +1050,7 @@ async function loadBookings() {
     }
 
 }
+```
 
 
 /* UPDATE BOOKING STATUS */
