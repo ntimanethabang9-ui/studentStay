@@ -472,21 +472,20 @@ async function checkUser() {
     }
 
 
-    console.log("Logged in user:", user.id);
+    console.log("Logged in user ID:", user.id);
     console.log("Logged in email:", user.email);
 
 
     const {
-        data: profile,
+        data: profiles,
         error: profileError
     } = await supabaseClient
         .from("profiles")
         .select("id, full_name, role")
-        .eq("id", user.id)
-        .single();
+        .eq("id", user.id);
 
 
-    console.log("Profile:", profile);
+    console.log("Profiles returned:", profiles);
     console.log("Profile error:", profileError);
 
 
@@ -502,15 +501,24 @@ async function checkUser() {
     }
 
 
-    if (!profile) {
+    if (!profiles || profiles.length === 0) {
 
         alert(
-            "Your profile could not be found."
+            "No profile found for this account."
         );
 
         return;
 
     }
+
+
+    const profile = profiles[0];
+
+
+    console.log(
+        "Profile found:",
+        profile
+    );
 
 
     if (profile.role !== "owner") {
@@ -542,7 +550,6 @@ async function checkUser() {
     loadBookings();
 
 }
-
 /* ADD ACCOMMODATION */
 
 async function addAccommodation() {
